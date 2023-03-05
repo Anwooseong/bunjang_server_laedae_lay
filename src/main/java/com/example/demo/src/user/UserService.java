@@ -53,4 +53,15 @@ public class UserService {
         }
     }
 
+    public void withDrawUser(int userIdx) throws BaseException {
+        try {
+            int result = userDao.withDrawUser(userIdx);
+            if(result == 0) {
+                throw new BaseException(POST_USERS_WITHDRAW_FAIL);
+            }
+        } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }
