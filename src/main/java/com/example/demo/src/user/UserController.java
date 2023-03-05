@@ -47,4 +47,23 @@ public class UserController {
         }
     }
 
+    /**
+     * 회원 탈퇴 API
+     * [PATCH] /users/d
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/d")
+    public BaseResponse<String> withDrawUser() {
+        try {
+            int userIdxByJwt = jwtService.getUserId();
+            userService.withDrawUser(userIdxByJwt);
+
+            String result = "요청 성공";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }
