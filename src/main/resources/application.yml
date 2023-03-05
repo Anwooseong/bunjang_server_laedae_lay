@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: demo
+  profiles:
+    active: prod
+
 
   datasource:
     platform: mysql
