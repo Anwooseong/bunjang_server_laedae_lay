@@ -13,3 +13,10 @@
 3. 배너 이미지 리스트 API
 4. 본인인증 API
 
+
+## 230306
++ 서버 잘못건드려서 EC2, SSL 재설정
+![9001-prod](https://user-images.githubusercontent.com/84388081/222973065-ce022b1d-c8da-4edc-bcd1-9e6021701023.png)
+![test/log/](https://user-images.githubusercontent.com/84388081/222973151-a6be3cfe-bb3d-4362-aeb8-f62bdef9a185.png)
+
+
