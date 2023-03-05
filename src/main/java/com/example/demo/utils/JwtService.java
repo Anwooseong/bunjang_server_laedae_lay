@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
+@Transactional
 public class JwtService {
 
     /*
@@ -24,11 +26,11 @@ public class JwtService {
     @param userIdx
     @return String
      */
-    public String createJwt(int userIdx){
+    public String createJwt(int userId){
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("userIdx",userIdx)
+                .claim("userId",userId)
                 .setIssuedAt(now)
                 .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
                 .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
@@ -49,7 +51,7 @@ public class JwtService {
     @return int
     @throws BaseException
      */
-    public int getUserIdx() throws BaseException{
+    public int getUserId() throws BaseException{
         //1. JWT 추출
         String accessToken = getJwt();
         if(accessToken == null || accessToken.length() == 0){
@@ -67,7 +69,7 @@ public class JwtService {
         }
 
         // 3. userIdx 추출
-        return claims.getBody().get("userIdx",Integer.class);  // jwt 에서 userIdx를 추출합니다.
+        return claims.getBody().get("userId",Integer.class);  // jwt 에서 userIdx를 추출합니다.
     }
 
 }
