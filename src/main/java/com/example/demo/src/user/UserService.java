@@ -28,6 +28,9 @@ public class UserService {
     // 회원가입(POST)
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         String phoneNumber;
+        if (userProvider.checkStoreName(postUserReq.getStoreName()) == 1){
+            throw new BaseException(POST_USERS_EXISTS_STORE_NAME);
+        }
         try {
             //암호화
             phoneNumber = new SHA256().encrypt(postUserReq.getPhoneNumber());

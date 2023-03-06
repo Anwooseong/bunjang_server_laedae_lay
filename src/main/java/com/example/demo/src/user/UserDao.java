@@ -58,4 +58,11 @@ public class UserDao {
         return this.jdbcTemplate.update(withDrawUserQuery, withDrawParam);
     }
 
+    public int checkStoreName(String storeName) {
+        String checkStoreNameQuery = "select exists(select store_name from Store where store_name = ? and status = 'A')";
+        String checkStoreNameParams = storeName; // 해당(확인할) 이메일 값
+        return this.jdbcTemplate.queryForObject(checkStoreNameQuery,
+                int.class,
+                checkStoreNameParams);
+    }
 }
