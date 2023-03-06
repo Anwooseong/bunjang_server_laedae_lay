@@ -28,8 +28,4 @@ public class BannerDao {
                 ));
     }
 
-    public int isBannerImage() {
-        String isBannerImageQuery = "select exists(select url from Banner where status = 'A')";
-        return this.jdbcTemplate.queryForObject(isBannerImageQuery, int.class);
-    }
 }

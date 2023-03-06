@@ -12,4 +12,5 @@ public class PostUserReq {
     private String name;
     private String birth;
     private String carrier;
+    private String gender;
 }
