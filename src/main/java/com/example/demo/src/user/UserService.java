@@ -27,8 +27,9 @@ public class UserService {
 
     // 회원가입(POST)
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
+
         String phoneNumber;
-        if (userProvider.checkStoreName(postUserReq.getStoreName()) == 1){
+        if (userProvider.checkStoreName(postUserReq.getStoreName()) == 1){ //상점명 중복
             throw new BaseException(POST_USERS_EXISTS_STORE_NAME);
         }
         try {
@@ -38,17 +39,18 @@ public class UserService {
         } catch (Exception ignored) {
             throw new BaseException(PHONE_ENCRYPTION_ERROR);
         }
-
+        if (userProvider.checkReportUser(postUserReq.getPhoneNumber()) == 1){
+            throw new BaseException(POST_USERS_REPORT_USER);
+        }
         if (userProvider.checkPhoneNumber(postUserReq.getPhoneNumber()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_PHONE);
         }
 
         try {
-            int storeId = userDao.createStore(postUserReq);
-            int userId = userDao.createUser(postUserReq, storeId);
+            int userId = userDao.createUser(postUserReq);
             //jwt 발급.
             String jwt = jwtService.createJwt(userId);
-            return new PostUserRes(postUserReq.getName(), jwt);
+            return new PostUserRes(userId, postUserReq.getStoreName(), postUserReq.getName(), jwt);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

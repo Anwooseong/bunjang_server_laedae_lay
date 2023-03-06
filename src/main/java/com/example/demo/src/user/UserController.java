@@ -43,6 +43,9 @@ public class UserController {
         if (!isRegexBirth(postUserReq.getBirth())){
             return new BaseResponse<>(POST_USERS_BIRTH_REGEX);
         }
+        if (Integer.parseInt(postUserReq.getGender()) > 4){
+            return new BaseResponse<>(POST_USERS_GENDER_REGEX);
+        }
         if (postUserReq.getStoreName() == null) {
             return new BaseResponse<>(POST_USERS_EMPTY_STORE_NAME);
         }
@@ -57,6 +60,9 @@ public class UserController {
         }
         if (postUserReq.getCarrier() == null){
             return new BaseResponse<>(POST_USERS_EMPTY_CARRIER);
+        }
+        if (postUserReq.getGender() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_GENDER);
         }
         try {
             PostUserRes postUserRes = userService.createUser(postUserReq);

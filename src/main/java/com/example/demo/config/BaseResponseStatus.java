@@ -38,6 +38,9 @@ public enum BaseResponseStatus {
     POST_USERS_COUNT_PHONE(false, 2024, "휴대폰 전화번호 4자리 이상 적어주세요."),
     POST_USERS_PHONE_REGEX(false, 2025, "휴대폰 전화번호 -개수와 숫자를 3, 4, 4로 맞춰주세요."),
     POST_USERS_BIRTH_REGEX(false, 2026, "생년월일 6자리 수를 확인하고, 월일이 각각 00이 안되게 해주세요."),
+    POST_USERS_EMPTY_GENDER(false, 2027, "성별 입력칸이 비어있습니다."),
+    POST_USERS_GENDER_REGEX(false, 2028, "성별은 숫자 4이하로 입력해주세요."),
+    POST_USERS_REPORT_USER(false, 2029, "신고로 정지당한 회원입니다."),
 
 
 
