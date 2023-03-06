@@ -19,9 +19,6 @@ public class BannerProvider {
     @Transactional(readOnly = true)
     public GetBannerRes getBannersUrl() throws BaseException {
         try {
-            if (bannerDao.isBannerImage() == 0) {
-                throw new BaseException(BaseResponseStatus.FAILED_TO_BANNER_IMAGE);
-            }
             GetBannerRes getBannerRes = new GetBannerRes(bannerDao.findBannersUrl());
             return getBannerRes;
         } catch (Exception e) {
