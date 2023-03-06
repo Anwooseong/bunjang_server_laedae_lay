@@ -7,15 +7,12 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
 import static com.example.demo.config.BaseResponseStatus.*;
-import static com.example.demo.utils.ValidationRegex.isRegexEmail;
+import static com.example.demo.utils.ValidationRegex.*;
 
 @RestController
 @RequestMapping("/app/users")
@@ -31,13 +28,35 @@ public class UserController {
 
     /**
      * 회원가입 API
-     * [POST] /users
+     * [POST] /create
+     * BaseResponse<PostUserRes>
      */
-    // Body
-    @PostMapping("/login")
+    //TODO REGEX
+    @PostMapping("/create")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-        if (postUserReq.getStoreName() == null || postUserReq.getPhoneNumber() == null || postUserReq.getName() == null || postUserReq.getBirth() == null || postUserReq.getCarrier() == null) {
-            return new BaseResponse<>(POST_USERS_EMPTY);
+        if (postUserReq.getPhoneNumber().length() < 4){
+            return new BaseResponse<>(POST_USERS_COUNT_PHONE);
+        }
+        if (!isRegexPhone(postUserReq.getPhoneNumber())){
+            return new BaseResponse<>(POST_USERS_PHONE_REGEX);
+        }
+        if (!isRegexBirth(postUserReq.getBirth())){
+            return new BaseResponse<>(POST_USERS_BIRTH_REGEX);
+        }
+        if (postUserReq.getStoreName() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_STORE_NAME);
+        }
+        if (postUserReq.getPhoneNumber() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PHONE_NUMBER);
+        }
+        if (postUserReq.getName() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_NAME);
+        }
+        if (postUserReq.getBirth() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_BIRTH);
+        }
+        if (postUserReq.getCarrier() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_CARRIER);
         }
         try {
             PostUserRes postUserRes = userService.createUser(postUserReq);
