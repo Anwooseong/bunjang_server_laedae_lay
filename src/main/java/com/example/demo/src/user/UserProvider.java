@@ -34,4 +34,11 @@ public class UserProvider {
     }
 
 
+    public int checkStoreName(String storeName) throws BaseException{
+        try {
+            return userDao.checkStoreName(storeName);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

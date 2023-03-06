@@ -30,6 +30,7 @@ public enum BaseResponseStatus {
     POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
     POST_USERS_EXISTS_PHONE(false,2017,"중복된 전화번호입니다."),
     POST_USERS_WITHDRAW_FAIL(false, 2018, "회원 탈퇴에 실패하였습니다."),
+    POST_USERS_EXISTS_STORE_NAME(false, 2019, "중복된 가게이름입니다."),
 
 
 
