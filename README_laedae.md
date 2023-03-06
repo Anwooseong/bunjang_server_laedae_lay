@@ -14,7 +14,7 @@
 4. 본인인증 API
 
 
-## 230306 진행상황
+## 230306 개발일지
 * 서버 잘못건드려서 EC2, SSL 재설정(prod 재설정 중 80포트에만 SSL적용이 돼어 proxy_pass를 통해 재설정)
 ![9001-prod](https://user-images.githubusercontent.com/84388081/222973065-ce022b1d-c8da-4edc-bcd1-9e6021701023.png)
 ![test/log/](https://user-images.githubusercontent.com/84388081/222973151-a6be3cfe-bb3d-4362-aeb8-f62bdef9a185.png)
@@ -34,5 +34,6 @@
     - /app/users/d -> /app/users/status
     - /app/products/search= -> /app/products?search= 쿼리스트링이기 때문에 ?로 바꾸자.
     - Result Code가 적다.(정규화한 에러코드나 데이터베이스 암호화 이런것들도 추가해야함)
+* 피드백 반영 후 ERD 재설계 완료, REST API설계 완료(추가 구현 필요)
 
 
