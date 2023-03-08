@@ -33,6 +33,12 @@ public class ValidationRegex {
         return matcher.find();
     }
 
+    public static boolean isRegexSearch(String target) {
+        String regex = "/([^가-힣ㄱ-ㅎㅏ-ㅣ\\x20])/i";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
 
 
     public static boolean isRegexBirth(String target) {
