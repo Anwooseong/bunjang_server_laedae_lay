@@ -43,7 +43,7 @@ public enum BaseResponseStatus {
     POST_USERS_REPORT_USER(false, 2029, "신고로 정지당한 회원입니다."),
     POST_USERS_UID_REGEX(false, 2030, "영문과 숫자의 조합으로 5글자에서 8글자로 맞춰주세요."),
     POST_USERS_EXISTS_UID(false,2031,"중복된 아이디입니다."),
-    POST_USERS_SEARCH_REGEX(false,2032,"검색창에 자음이 있거나 모음이 있습니다."),
+    GET_SEARCH_REGEX(false,2032,"검색창 첫 글자에 한글 자음이 있거나 한글 모음이 있습니다."),
 
 
 

@@ -26,4 +26,14 @@ public class TagProvider {
         }
 
     }
+
+    public void getValidUser(int userId) throws BaseException {
+        try {
+            if (tagDao.getValidUser(userId) == 0) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 }

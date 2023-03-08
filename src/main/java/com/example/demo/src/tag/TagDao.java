@@ -24,4 +24,10 @@ public class TagDao {
                         rs.getString("name")
                 ));
     }
+
+    public int getValidUser(int userId) {
+        String getValidUserQuery = "select exists(select id from User where id = ? and status = 'A')";
+        int getValidUserParam = userId;
+        return this.jdbcTemplate.queryForObject(getValidUserQuery, int.class, getValidUserParam);
+    }
 }
