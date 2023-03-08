@@ -19,6 +19,22 @@ public class ValidationRegex {
         return matcher.find();
     }
 
+    public static boolean isRegexUid(String target) {
+        String regex = "^[a-zA-Z][0-9a-zA-Z]{4,7}$";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
+
+    public static boolean isRegexPassword(String target) {
+        String regex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
+
+
+
     public static boolean isRegexBirth(String target) {
         String regex = "\\d{2}([0]\\d|[1][0-2])([0][1-9]|[1-2]\\d|[3][0-1])";
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);

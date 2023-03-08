@@ -27,30 +27,41 @@ public class UserService {
 
     // 회원가입(POST)
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
-
-        String phoneNumber;
-        if (userProvider.checkStoreName(postUserReq.getStoreName()) == 1){ //상점명 중복
-            throw new BaseException(POST_USERS_EXISTS_STORE_NAME);
-        }
-        try {
-            //암호화
-            phoneNumber = new SHA256().encrypt(postUserReq.getPhoneNumber());
-            postUserReq.setPhoneNumber(phoneNumber);
-        } catch (Exception ignored) {
-            throw new BaseException(PHONE_ENCRYPTION_ERROR);
-        }
-        if (userProvider.checkReportUser(postUserReq.getPhoneNumber()) == 1){
-            throw new BaseException(POST_USERS_REPORT_USER);
+        if (userProvider.checkReportUser(postUserReq.getPhoneNumber(), postUserReq.getName()) == 1){
+            throw new BaseException(POST_USERS_REPORT_USER); // 2029, "신고로 정지당한 회원입니다."
         }
         if (userProvider.checkPhoneNumber(postUserReq.getPhoneNumber()) == 1) {
-            throw new BaseException(POST_USERS_EXISTS_PHONE);
+            throw new BaseException(POST_USERS_EXISTS_PHONE); // 2017,"중복된 전화번호입니다."
+        }
+        if (userProvider.checkUid(postUserReq.getUid()) == 1) {
+            throw new BaseException(POST_USERS_EXISTS_UID); // 2031,"중복된 아이디입니다."
+        }
+        String password;
+        try {
+            //암호화
+            password = new SHA256().encrypt(postUserReq.getPassword());
+            postUserReq.setPassword(password);
+        } catch (Exception ignored) {
+            throw new BaseException(PASSWORD_ENCRYPTION_ERROR); // 4011, "비밀번호 암호화에 실패하였습니다."
+        }
+
+        //상점명 랜덤기입
+        boolean checkStore = true;
+        String baseStoreName = "";
+        while (checkStore) {
+            int randomValue = (int)(Math.random()*10000+1 -1000)+1000; //1000~10000랜덤수
+            String randomStoreName = "가게"+randomValue;
+            if (userProvider.checkStoreName(randomStoreName) == 0) {
+                baseStoreName = randomStoreName;
+                checkStore = false;
+            }
         }
 
         try {
-            int userId = userDao.createUser(postUserReq);
+            int userId = userDao.createUser(postUserReq, baseStoreName);
             //jwt 발급.
             String jwt = jwtService.createJwt(userId);
-            return new PostUserRes(userId, postUserReq.getStoreName(), postUserReq.getName(), jwt);
+            return new PostUserRes(userId, baseStoreName, postUserReq.getName(), jwt);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

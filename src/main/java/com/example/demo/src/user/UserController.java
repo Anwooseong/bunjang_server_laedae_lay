@@ -35,34 +35,28 @@ public class UserController {
     @PostMapping("/create")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
         if (postUserReq.getPhoneNumber().length() < 4){
-            return new BaseResponse<>(POST_USERS_COUNT_PHONE);
+            return new BaseResponse<>(POST_USERS_COUNT_PHONE); // 2024, "휴대폰 전화번호 4자리 이상 적어주세요."
         }
         if (!isRegexPhone(postUserReq.getPhoneNumber())){
-            return new BaseResponse<>(POST_USERS_PHONE_REGEX);
+            return new BaseResponse<>(POST_USERS_PHONE_REGEX); // 2025, "휴대폰 전화번호 -개수와 숫자를 3, 4, 4로 맞춰주세요."
         }
-        if (!isRegexBirth(postUserReq.getBirth())){
-            return new BaseResponse<>(POST_USERS_BIRTH_REGEX);
+        if (!isRegexUid(postUserReq.getUid())) {
+            return new BaseResponse<>(POST_USERS_UID_REGEX); // 2030, "영문과 숫자의 조합으로 5글자에서 8글자로 맞춰주세요."
         }
-        if (Integer.parseInt(postUserReq.getGender()) > 4){
-            return new BaseResponse<>(POST_USERS_GENDER_REGEX);
+        if (!isRegexPassword(postUserReq.getPassword())) {
+            return new BaseResponse<>(POST_USERS_PASSWORD_REGEX);  // 2026, "최소 8 자, 하나 이상의 대문자, 하나의 소문자, 하나의 숫자 및 하나의 특수 문자 정규식"
         }
-        if (postUserReq.getStoreName() == null) {
-            return new BaseResponse<>(POST_USERS_EMPTY_STORE_NAME);
+        if (postUserReq.getName() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_NAME); // 2021, "이름 입력칸이 비어 있습니다."
         }
         if (postUserReq.getPhoneNumber() == null){
-            return new BaseResponse<>(POST_USERS_EMPTY_PHONE_NUMBER);
+            return new BaseResponse<>(POST_USERS_EMPTY_PHONE_NUMBER); // 2020, "전화번호 입력칸이 비어 있습니다."
         }
-        if (postUserReq.getName() == null){
-            return new BaseResponse<>(POST_USERS_EMPTY_NAME);
+        if (postUserReq.getUid() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_UID); // 2022, "아이디 입력칸이 비어 있습니다."
         }
-        if (postUserReq.getBirth() == null){
-            return new BaseResponse<>(POST_USERS_EMPTY_BIRTH);
-        }
-        if (postUserReq.getCarrier() == null){
-            return new BaseResponse<>(POST_USERS_EMPTY_CARRIER);
-        }
-        if (postUserReq.getGender() == null){
-            return new BaseResponse<>(POST_USERS_EMPTY_GENDER);
+        if (postUserReq.getPassword() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD); // 2023, "비밀번호 입력칸이 비어 있습니다."
         }
         try {
             PostUserRes postUserRes = userService.createUser(postUserReq);

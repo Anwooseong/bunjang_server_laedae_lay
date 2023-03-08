@@ -24,11 +24,46 @@ public class UserDao {
 
     // 이메일 확인
     public int checkPhoneNumber(String phoneNumber) {
-        String checkPhoneQuery = "select exists(select phone_number from User where phone_number = ? and status = 'A')";
+        String checkPhoneQuery = "select exists(select phone_number from User where phone_number = ? and status = 'A' or status='H')";
         String checkPhoneParams = phoneNumber;
         return this.jdbcTemplate.queryForObject(checkPhoneQuery,
                 int.class,
                 checkPhoneParams);
+    }
+
+    public int createUser(PostUserReq postUserReq, String baseStoreName) {
+        String createUserQuery = "insert into User(store_name, name, phone_number, uid, password)" +
+                " values (?, ?, ?, ?, ?)";
+        Object[] createUserParams = new Object[]{baseStoreName, postUserReq.getName(), postUserReq.getPhoneNumber(), postUserReq.getUid(), postUserReq.getPassword()};
+        this.jdbcTemplate.update(createUserQuery, createUserParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+
+    }
+
+    public int checkStoreName(String randomStoreName) {
+        String checkPhoneQuery = "select exists(select store_name from User where store_name = ? and status = 'A' or status='H')";
+        String checkPhoneParams = randomStoreName;
+        return this.jdbcTemplate.queryForObject(checkPhoneQuery,
+                int.class,
+                checkPhoneParams);
+    }
+
+    public int checkReportUser(String phoneNumber, String name) {
+        String checkReportQuery = "select exists(select phone_number from User where phone_number = ? and name = ? and status = 'S')";
+        Object[] createReportParams = new Object[]{phoneNumber, name};
+        return this.jdbcTemplate.queryForObject(checkReportQuery,
+                int.class,
+                createReportParams);
+    }
+
+    public int checkUid(String uid) {
+        String checkUidQuery = "select exists(select uid from User where uid = ? and status = 'A' or status='H')";
+        String checkUidParams = uid;
+        return this.jdbcTemplate.queryForObject(checkUidQuery,
+                int.class,
+                checkUidParams);
     }
 
     public int withDrawUser(int userIdx) {
@@ -38,32 +73,5 @@ public class UserDao {
         String withDrawParam = String.valueOf(userIdx);
 
         return this.jdbcTemplate.update(withDrawUserQuery, withDrawParam);
-    }
-
-    public int createUser(PostUserReq postUserReq) {
-        String createUserQuery = "insert into User(store_name, phone_number, name, birth, carrier, gender)" +
-                " values (?, ?, ?, ?, ?, ?)";
-        Object[] createUserParams = new Object[]{postUserReq.getStoreName(), postUserReq.getPhoneNumber(), postUserReq.getName(), postUserReq.getBirth(), postUserReq.getCarrier(), postUserReq.getGender()};
-        this.jdbcTemplate.update(createUserQuery, createUserParams);
-
-        String lastInsertIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
-
-    }
-
-    public int checkStoreName(String storeName) {
-        String checkPhoneQuery = "select exists(select store_name from User where store_name = ? and status = 'A')";
-        String checkPhoneParams = storeName;
-        return this.jdbcTemplate.queryForObject(checkPhoneQuery,
-                int.class,
-                checkPhoneParams);
-    }
-
-    public int checkReportUser(String phoneNumber) {
-        String checkPhoneQuery = "select exists(select phone_number from User where phone_number = ? and status = 'S')";
-        String checkPhoneParams = phoneNumber;
-        return this.jdbcTemplate.queryForObject(checkPhoneQuery,
-                int.class,
-                checkPhoneParams);
     }
 }

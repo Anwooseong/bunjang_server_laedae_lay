@@ -33,14 +33,16 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_STORE_NAME(false, 2019, "중복된 가게이름입니다."),
     POST_USERS_EMPTY_PHONE_NUMBER(false, 2020, "전화번호 입력칸이 비어 있습니다."),
     POST_USERS_EMPTY_NAME(false, 2021, "이름 입력칸이 비어 있습니다."),
-    POST_USERS_EMPTY_BIRTH(false, 2022, "생일 입력칸을 다시 확인해주세요."),
-    POST_USERS_EMPTY_CARRIER(false, 2023, "통신사 입력칸을 다시 확인해주세요."),
+    POST_USERS_EMPTY_UID(false, 2022, "아이디 입력칸이 비어 있습니다."),
+    POST_USERS_EMPTY_PASSWORD(false, 2023, "비밀번호 입력칸이 비어 있습니다."),
     POST_USERS_COUNT_PHONE(false, 2024, "휴대폰 전화번호 4자리 이상 적어주세요."),
     POST_USERS_PHONE_REGEX(false, 2025, "휴대폰 전화번호 -개수와 숫자를 3, 4, 4로 맞춰주세요."),
-    POST_USERS_BIRTH_REGEX(false, 2026, "생년월일 6자리 수를 확인하고, 월일이 각각 00이 안되게 해주세요."),
+    POST_USERS_PASSWORD_REGEX(false, 2026, "최소 8 자, 하나 이상의 대문자, 하나의 소문자, 하나의 숫자 및 하나의 특수 문자 정규식"),
     POST_USERS_EMPTY_GENDER(false, 2027, "성별 입력칸이 비어있습니다."),
     POST_USERS_GENDER_REGEX(false, 2028, "성별은 숫자 4이하로 입력해주세요."),
     POST_USERS_REPORT_USER(false, 2029, "신고로 정지당한 회원입니다."),
+    POST_USERS_UID_REGEX(false, 2030, "영문과 숫자의 조합으로 5글자에서 8글자로 맞춰주세요."),
+    POST_USERS_EXISTS_UID(false,2031,"중복된 아이디입니다."),
 
 
 
@@ -66,9 +68,8 @@ public enum BaseResponseStatus {
     //[PATCH] /users/{userIdx}
     MODIFY_FAIL_USERNAME(false,4014,"유저네임 수정 실패"),
 
-    PHONE_ENCRYPTION_ERROR(false, 4011, "전화번호 암호화에 실패하였습니다."),
-    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
-    BIRTH_ENCRYPTION_ERROR(false, 4013, "생일 복호화에 실패하였습니다.");
+    PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
+    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
 
 
     // 5000 : 필요시 만들어서 쓰세요
