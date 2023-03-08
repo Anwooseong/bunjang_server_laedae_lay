@@ -66,9 +66,9 @@ public class UserDao {
     }
 
     public int withDrawUser(int userIdx) {
-        String withDrawUserQuery = "update Store inner join User U on Store.id = U.store_id " +
-                "set U.status = 'D', Store.status = 'D' " +
-                "where U.id = ?";
+        String withDrawUserQuery = "update User " +
+                "set User.status = 'D' " +
+                "where User.id = ?";
         String withDrawParam = String.valueOf(userIdx);
 
         return this.jdbcTemplate.update(withDrawUserQuery, withDrawParam);

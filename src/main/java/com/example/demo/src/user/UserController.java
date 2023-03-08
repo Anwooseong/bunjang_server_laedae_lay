@@ -94,15 +94,18 @@ public class UserController {
 
     /**
      * 회원 탈퇴 API
-     * [PATCH] /users/d
+     * [PATCH] /users/{userId}/delete
      * @return BaseResponse<String>
      */
     @ResponseBody
-    @PatchMapping("/d")
-    public BaseResponse<String> withDrawUser() {
+    @PatchMapping("/{userId}/delete")
+    public BaseResponse<String> withDrawUser(@PathVariable("userId") int userId) {
         try {
-            int userIdxByJwt = jwtService.getUserId();
-            userService.withDrawUser(userIdxByJwt);
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.withDrawUser(userIdByJwt);
 
             String result = "요청 성공";
             return new BaseResponse<>(result);
