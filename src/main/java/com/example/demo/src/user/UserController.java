@@ -31,7 +31,6 @@ public class UserController {
      * [POST] /create
      * BaseResponse<PostUserRes>
      */
-    //TODO REGEX
     @PostMapping("/create")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
         if (postUserReq.getPhoneNumber().length() < 4){
@@ -61,6 +60,33 @@ public class UserController {
         try {
             PostUserRes postUserRes = userService.createUser(postUserReq);
             return new BaseResponse<>(postUserRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 로그인 API
+     * [POST] /create
+     * BaseResponse<PostUserRes>
+     */
+    @PostMapping("/login")
+    public BaseResponse<PostLoginRes> loginUser(@RequestBody PostLoginReq postLoginReq) {
+        if (postLoginReq.getUid() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_UID); // 2022, "아이디 입력칸이 비어 있습니다."
+        }
+        if (postLoginReq.getPassword() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD); // 2023, "비밀번호 입력칸이 비어 있습니다."
+        }
+        if (!isRegexUid(postLoginReq.getUid())) {
+            return new BaseResponse<>(POST_USERS_UID_REGEX); // 2030, "영문과 숫자의 조합으로 5글자에서 8글자로 맞춰주세요."
+        }
+        if (!isRegexPassword(postLoginReq.getPassword())) {
+            return new BaseResponse<>(POST_USERS_PASSWORD_REGEX);  // 2026, "최소 8 자, 하나 이상의 대문자, 하나의 소문자, 하나의 숫자 및 하나의 특수 문자 정규식"
+        }
+        try {
+            PostLoginRes postLoginRes = userProvider.login(postLoginReq);
+            return new BaseResponse<>(postLoginRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

@@ -22,7 +22,6 @@ public class UserDao {
     }
 
 
-    // 이메일 확인
     public int checkPhoneNumber(String phoneNumber) {
         String checkPhoneQuery = "select exists(select phone_number from User where phone_number = ? and status = 'A' or status='H')";
         String checkPhoneParams = phoneNumber;
@@ -73,5 +72,35 @@ public class UserDao {
         String withDrawParam = String.valueOf(userIdx);
 
         return this.jdbcTemplate.update(withDrawUserQuery, withDrawParam);
+    }
+
+    public User getPwd(PostLoginReq postLoginReq) {
+        String getPwdQuery = "select * from User where uid = ? and status = 'A'";
+        return this.jdbcTemplate.queryForObject(getPwdQuery,
+                (rs, rowNum) -> new User(
+                        rs.getInt("id"),
+                        rs.getString("store_name"),
+                        rs.getString("store_introduction"),
+                        rs.getString("profile_url"),
+                        rs.getInt("default_account_id"),
+                        rs.getInt("safe_pay"),
+                        rs.getString("name"),
+                        rs.getString("uid"),
+                        rs.getString("password"),
+                        rs.getString("phone_number"),
+                        rs.getFloat("latitude"),
+                        rs.getFloat("longitude"),
+                        rs.getString("last_access_date"),
+                        rs.getInt("default_address_id")
+                ),
+                postLoginReq.getUid());
+    }
+
+    public int checkLoginReportUser(PostLoginReq postLoginReq, String encryptPwd) {
+        String checkLoginReportQuery = "select exists(select id from User where uid = ? and password = ? and status = 'S')";
+        Object[] createLoginReportParams = new Object[]{postLoginReq.getUid(), encryptPwd};
+        return this.jdbcTemplate.queryForObject(checkLoginReportQuery,
+                int.class,
+                createLoginReportParams);
     }
 }
