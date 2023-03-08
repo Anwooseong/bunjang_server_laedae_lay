@@ -27,19 +27,26 @@ public class UserProvider {
         }
     }
 
-
-    public int checkStoreName(String storeName) throws BaseException{
+    public int checkReportUser(String phoneNumber, String name) throws BaseException {
         try {
-            return userDao.checkStoreName(storeName);
+            return userDao.checkReportUser(phoneNumber, name);
         }catch (Exception e){
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public int checkReportUser(String phoneNumber) throws BaseException {
+    public int checkUid(String uid) throws BaseException{
         try {
-            return userDao.checkReportUser(phoneNumber);
-        }catch (Exception e){
+            return userDao.checkUid(uid);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkStoreName(String randomStoreName) throws BaseException{
+        try {
+            return userDao.checkStoreName(randomStoreName);
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
