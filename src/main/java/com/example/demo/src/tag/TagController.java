@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/app/tags")
 @RequiredArgsConstructor
@@ -22,14 +24,14 @@ public class TagController {
     private final TagProvider tagProvider;
 
     @GetMapping("")
-    public BaseResponse<GetTagRes> searchTags(@RequestParam("query") String search){
+    public BaseResponse<List<GetTagRes>> searchTags(@RequestParam("query") String search){
         if (!ValidationRegex.isRegexSearch(search)) {
             return new BaseResponse<>(BaseResponseStatus.GET_SEARCH_REGEX);
         }
         try {
             int userId = jwtService.getUserId();
             tagProvider.getValidUser(userId);
-            GetTagRes getTagRes = tagProvider.getSearchResult(search);
+            List<GetTagRes> getTagRes = tagProvider.getSearchResult(search);
             return new BaseResponse<>(getTagRes);
         }catch (BaseException e){
             return new BaseResponse<>((e.getStatus()));
