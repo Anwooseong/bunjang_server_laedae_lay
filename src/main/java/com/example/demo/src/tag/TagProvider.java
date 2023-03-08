@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -17,9 +18,9 @@ public class TagProvider {
     private final TagDao tagDao;
     private final JwtService jwtService;
 
-    public GetTagRes getSearchResult(String search) throws BaseException {
+    public List<GetTagRes> getSearchResult(String search) throws BaseException {
         try {
-            GetTagRes getTagRes = new GetTagRes(tagDao.getSearchResult(search));
+            List<GetTagRes> getTagRes = tagDao.getSearchResult(search);
             return getTagRes;
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);

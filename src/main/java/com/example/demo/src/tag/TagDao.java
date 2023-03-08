@@ -17,10 +17,11 @@ public class TagDao {
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    public List<String > getSearchResult(String search) {
+    public List<GetTagRes> getSearchResult(String search) {
         String searchTag = "select * from Tag where name like '%" + search + "%' and status ='A'";
         return this.jdbcTemplate.query(searchTag,
-                (rs, rowNum) -> new String (
+                (rs, rowNum) -> new GetTagRes (
+                        rs.getInt("id"),
                         rs.getString("name")
                 ));
     }
