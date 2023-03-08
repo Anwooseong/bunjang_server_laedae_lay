@@ -4,6 +4,7 @@ package com.example.demo.src.banner;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.banner.model.GetBannerRes;
+import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +18,14 @@ import java.util.List;
 public class BannerController {
     private final BannerService bannerService;
     private final BannerProvider bannerProvider;
+    private final JwtService jwtService;
+
 
     @GetMapping("")
     public BaseResponse<GetBannerRes> findBanners() {
         try {
+            int userId = jwtService.getUserId();
+            bannerProvider.getValidUser(userId);
             GetBannerRes getBannerRes = bannerProvider.getBannersUrl();
             return new BaseResponse<>(getBannerRes);
         } catch (BaseException e) {
