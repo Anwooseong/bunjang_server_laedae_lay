@@ -10,5 +10,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class GetTagRes {
-    List<String> tags;
+    private int id;
+    private String name;
 }

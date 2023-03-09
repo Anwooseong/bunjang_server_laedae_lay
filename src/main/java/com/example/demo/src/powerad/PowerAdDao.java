@@ -1,6 +1,6 @@
-package com.example.demo.src.tag;
+package com.example.demo.src.powerad;
 
-import com.example.demo.src.tag.model.GetTagRes;
+import com.example.demo.src.powerad.model.GetPowerAdRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
-public class TagDao {
+public class PowerAdDao {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -17,18 +17,23 @@ public class TagDao {
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    public List<GetTagRes> getSearchResult(String search) {
-        String searchTag = "select * from Tag where name like '%" + search + "%' and status ='A'";
-        return this.jdbcTemplate.query(searchTag,
-                (rs, rowNum) -> new GetTagRes (
-                        rs.getInt("id"),
-                        rs.getString("name")
-                ));
-    }
 
     public int getValidUser(int userId) {
         String getValidUserQuery = "select exists(select id from User where id = ? and status = 'A')";
         int getValidUserParam = userId;
         return this.jdbcTemplate.queryForObject(getValidUserQuery, int.class, getValidUserParam);
+    }
+
+    public List<GetPowerAdRes> getPowerAd() {
+        String getPowerAdQuery = "select * from AD where status='A'";
+        return this.jdbcTemplate.query(getPowerAdQuery,
+                (rs,rowNum) -> new GetPowerAdRes(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getInt("price"),
+                        rs.getString("seller"),
+                        rs.getString("img_url"),
+                        rs.getString("url")
+                ));
     }
 }

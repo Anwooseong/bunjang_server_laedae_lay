@@ -1,8 +1,8 @@
-package com.example.demo.src.tag;
+package com.example.demo.src.powerad;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
-import com.example.demo.src.tag.model.GetTagRes;
+import com.example.demo.src.powerad.model.GetPowerAdRes;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,26 +13,24 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class TagProvider {
-
-    private final TagDao tagDao;
+public class PowerAdProvider {
     private final JwtService jwtService;
+    private final PowerAdDao powerAdDao;
 
-    public List<GetTagRes> getSearchResult(String search) throws BaseException {
+    public void getValidUser(int userId) throws BaseException{
         try {
-            List<GetTagRes> getTagRes = tagDao.getSearchResult(search);
-            return getTagRes;
+            if (powerAdDao.getValidUser(userId) == 0) {
+                throw new BaseException(BaseResponseStatus.INVALID_JWT);
+            }
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
-
     }
 
-    public void getValidUser(int userId) throws BaseException {
+    public List<GetPowerAdRes> getPowerAd() throws BaseException{
         try {
-            if (tagDao.getValidUser(userId) == 0) {
-                throw new BaseException(BaseResponseStatus.INVALID_JWT);
-            }
+            List<GetPowerAdRes> getPowerAdRes = powerAdDao.getPowerAd();
+            return getPowerAdRes;
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
