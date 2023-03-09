@@ -42,4 +42,10 @@ public class ProductDao {
                 )
                 , getMainProductParams);
     }
+
+    public String getImageUrl(int id) {
+        String getImageUrlQuery = "select url from ProductImg join Product on Product.id = ProductImg.product_id where (ProductImg.id, ProductImg.product_id, ProductImg.url)\n" +
+                " in (select id, product_id, url from ProductImg where id in (select min(id) from ProductImg group by product_id)) and Product.id = ?";
+        return this.jdbcTemplate.queryForObject(getImageUrlQuery, String.class, id);
+    }
 }
