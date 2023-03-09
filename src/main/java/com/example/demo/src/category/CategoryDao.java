@@ -35,4 +35,14 @@ public class CategoryDao {
                         rs.getString("title")
                 ), getCategoriesBelongInMajorParam);
     }
+
+    public List<GetCategoryRes> getCategoriesBelongInMiddle(int middleCategoryId) {
+        String getCategoriesBelongInMiddleQuery = "select id, title from SubCategory where parent_id = 1";
+        String getCategoriesBelongInMiddleParam = String.valueOf(middleCategoryId);
+        return this.jdbcTemplate.query(getCategoriesBelongInMiddleQuery,
+                (rs, rowNum) -> new GetCategoryRes (
+                        rs.getInt("id"),
+                        rs.getString("title")
+                ), getCategoriesBelongInMiddleParam);
+    }
 }

@@ -56,4 +56,19 @@ public class CategoryController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 특정 중분류 카테고리에 속하는 소분류 카테고리 이름 전체 조회 API
+     * [GET] /app/categories/:majorCategoryId
+     * @return BaseResponse<GetCategoryRes>
+     */
+    @GetMapping("/{middleCategoryId}")
+    public BaseResponse<List<GetCategoryRes>> getCategoriesBelongInMiddle(@PathVariable("middleCategoryId") int middleCategoryId) {
+        try {
+            List<GetCategoryRes> getCategoriesBelongInMiddleRes = categoryProvider.getCategoriesBelongInMiddle(middleCategoryId);
+            return new BaseResponse<>(getCategoriesBelongInMiddleRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }
