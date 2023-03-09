@@ -101,13 +101,12 @@ public class UserController {
     @PatchMapping("/{userId}/delete")
     public BaseResponse<String> withDrawUser(@PathVariable("userId") int userId) {
         try {
-            int userIdByJwt = jwtService.getUserId();
-            if(userIdByJwt != userId) {
-                return new BaseResponse<>(INVALID_USER_JWT);
-            }
-            userService.withDrawUser(userIdByJwt);
+            int userIdByJwt = jwtService.getUserId();  // 토큰에서 userId 추출 / 토큰 만료, 빈 토큰, 부적합 토큰 체크
+            jwtService.validateUserByJwt(userIdByJwt, userId);  // user 권한만 체크
 
+            userService.withDrawUser(15);
             String result = "요청 성공";
+
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
