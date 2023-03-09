@@ -28,4 +28,13 @@ public class CategoryProvider {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<GetCategoryRes> getCategoriesBelongInMajor(int majorCategoryId) throws BaseException {
+        try {
+            List<GetCategoryRes> getCategoriesBelongInMajorRes = categoryDao.getCategoriesBelongInMajor(majorCategoryId);
+            return getCategoriesBelongInMajorRes;
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 }
