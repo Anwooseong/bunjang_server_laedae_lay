@@ -1,6 +1,7 @@
 package com.example.demo.src.follow;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.follow.model.PostFollowerReq;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,14 @@ public class FollowProvider {
     public int checkReportStore(int followingId) throws BaseException{
         try {
             return followDao.checkReportStore(followingId);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkFollow(PostFollowerReq postFollowerReq) throws BaseException {
+        try {
+            return followDao.checkFollow(postFollowerReq);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }

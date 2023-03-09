@@ -22,6 +22,9 @@ public class FollowService {
         if (followProvider.checkReportStore(postFollowerReq.getFollowingId()) == 1) {
             throw new BaseException(BaseResponseStatus.POST_USERS_REPORT_USER);
         }
+        if (followProvider.checkFollow(postFollowerReq) == 1) {
+            throw new BaseException(BaseResponseStatus.POST_FOLLOW_EXISTS);
+        }
         try {
             int id = followDao.createFollower(postFollowerReq);
             return new PostFollowerRes(id, "정상적으로 팔로우가 되었습니다.");

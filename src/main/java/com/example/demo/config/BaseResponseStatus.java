@@ -49,6 +49,7 @@ public enum BaseResponseStatus {
     GET_POINT_STATUS(false,2035,"쿼리 파라미터에서 status 부분을 다시 확인해주세요."),
     POST_REVIEW_EMPTY_CONTENT(false,2036,"리뷰 내용 입력칸이 비어있습니다."),
     POST_REVIEW_STAR_SIZE(false,2037,"별점은 0 이상 5 이하여야합니다."),
+    POST_FOLLOW_EXISTS(false,2038,"이미 팔로우되어있습니다."),
 
 
 

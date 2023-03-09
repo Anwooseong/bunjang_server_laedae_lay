@@ -32,10 +32,17 @@ public class FollowDao {
     }
 
     public int checkReportStore(int followingId) {
-        String checkReportQuery = "select exists(select id from User where id = ? and name = ? and status = 'S')";
+        String checkReportQuery = "select exists(select id from User where id = ? and status = 'S')";
         return this.jdbcTemplate.queryForObject(checkReportQuery,
                 int.class,
                 followingId);
     }
 
+    public int checkFollow(PostFollowerReq postFollowerReq) {
+        String checkFollowQuery = "select exists(select id from Follow where follower_id = ? and following_id = ? and status = 'A')";
+        Object[] checkFollowParams = new Object[]{postFollowerReq.getFollowerId(), postFollowerReq.getFollowingId()};
+        return this.jdbcTemplate.queryForObject(checkFollowQuery,
+                int.class,
+                checkFollowParams);
+    }
 }
