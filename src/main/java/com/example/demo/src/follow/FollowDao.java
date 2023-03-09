@@ -30,4 +30,12 @@ public class FollowDao {
         String lastInsertedQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertedQuery, int.class);
     }
+
+    public int checkReportStore(int followingId) {
+        String checkReportQuery = "select exists(select id from User where id = ? and name = ? and status = 'S')";
+        return this.jdbcTemplate.queryForObject(checkReportQuery,
+                int.class,
+                followingId);
+    }
+
 }

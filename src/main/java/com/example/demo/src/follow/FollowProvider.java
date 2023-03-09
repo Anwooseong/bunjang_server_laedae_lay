@@ -27,4 +27,12 @@ public class FollowProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int checkReportStore(int followingId) throws BaseException{
+        try {
+            return followDao.checkReportStore(followingId);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
