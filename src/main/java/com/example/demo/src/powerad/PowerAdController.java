@@ -20,6 +20,11 @@ public class PowerAdController {
     private final PowerAdProvider powerAdProvider;
     private final PowerAdService powerAdService;
 
+    /**
+     * 파워 쇼핑 AD 조회 API
+     * [GET] /app/power-ad
+     * @return BaseResponse<List<GetPowerAdRes>>
+     */
     @GetMapping("")
     public BaseResponse<List<GetPowerAdRes>> getPowerAd() {
         try {

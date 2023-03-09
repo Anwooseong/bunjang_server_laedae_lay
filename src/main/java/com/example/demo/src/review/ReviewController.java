@@ -22,6 +22,12 @@ public class ReviewController {
     private final ReviewProvider reviewProvider;
     private final ReviewService reviewService;
 
+
+    /**
+     * 상품 별점 후기 작성 API
+     * [POST] /app/reviews
+     * @return BaseResponse<PostReviewRes>
+     */
     @PostMapping("")
     public BaseResponse<PostReviewRes> createReview(@RequestBody PostReviewReq postReviewReq){
         try {

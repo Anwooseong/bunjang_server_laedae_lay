@@ -20,6 +20,11 @@ public class PointController {
     private final PointService pointService;
     private final PointProvider pointProvider;
 
+    /**
+     * 번개포인트 조회 API
+     * [GET] /app/bungae-points/{userId}/details
+     * @return BaseResponse<GetPointRes>
+     */
     @GetMapping("{userId}/details")
     public BaseResponse<GetPointRes> getPoint(@PathVariable int userId, @RequestParam(value = "status", defaultValue = "all") String status){
 

@@ -20,7 +20,11 @@ public class BannerController {
     private final BannerProvider bannerProvider;
     private final JwtService jwtService;
 
-
+    /**
+     * 배너 이미지 리스트 조회 API
+     * [GET] /app/home/banners
+     * @return BaseResponse<GetBannerRes>
+     */
     @GetMapping("")
     public BaseResponse<GetBannerRes> findBanners() {
         try {

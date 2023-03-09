@@ -22,6 +22,11 @@ public class BrandController {
     private final BrandProvider brandProvider;
     private final BrandService brandService;
 
+    /**
+     * 브랜드 전체 조회(검색 포함, 나의 팔로잉 여부) API
+     * [GET] /app/brands
+     * @return BaseResponse<List<GetBrandRes>>
+     */
     @GetMapping("{userId}")
     public BaseResponse<List<GetBrandRes>> getBrands(@RequestParam(value = "order", defaultValue = "ko", required = false) String order,
                                                      @RequestParam(value = "following", defaultValue = "N", required = false) String following,

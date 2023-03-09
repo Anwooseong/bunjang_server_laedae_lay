@@ -23,6 +23,11 @@ public class TagController {
     private final TagService tagService;
     private final TagProvider tagProvider;
 
+    /**
+     * 태그 검색 API
+     * [GET] /app/tags
+     * @return BaseResponse<List<GetTagRes>>
+     */
     @GetMapping("")
     public BaseResponse<List<GetTagRes>> searchTags(@RequestParam("query") String search){
         if (!ValidationRegex.isRegexSearch(search)) {

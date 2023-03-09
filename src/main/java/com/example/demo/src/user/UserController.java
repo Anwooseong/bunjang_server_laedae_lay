@@ -28,7 +28,7 @@ public class UserController {
 
     /**
      * 회원가입 API
-     * [POST] /create
+     * [POST] /app/users/create
      * BaseResponse<PostUserRes>
      */
     @PostMapping("/create")
@@ -67,7 +67,7 @@ public class UserController {
 
     /**
      * 로그인 API
-     * [POST] /create
+     * [POST] /app/users/create
      * BaseResponse<PostUserRes>
      */
     @PostMapping("/login")
