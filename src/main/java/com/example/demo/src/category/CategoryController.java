@@ -29,10 +29,10 @@ public class CategoryController {
 
     /**
      * 대분류 카테고리 이름 전체 API
-     * [GET] /app/categories
+     * [GET] /app/categories/major
      * @return BaseResponse<GetCategoryRes>
      */
-    @GetMapping("")
+    @GetMapping("/major")
     public BaseResponse<List<GetCategoryRes>> getMajorCategories() {
         try {
             List<GetCategoryRes> getMajorCategoriesRes = categoryProvider.getMajorCategories();
@@ -44,11 +44,11 @@ public class CategoryController {
 
     /**
      * 특정 대분류 카테고리에 속하는 중분류 카테고리 이름 전체 조회 API
-     * [GET] /app/categories/:majorCategoryId
+     * [GET] /app/categories/middle/:categoryId
      * @return BaseResponse<GetCategoryRes>
      */
-    @GetMapping("/{majorCategoryId}")
-    public BaseResponse<List<GetCategoryRes>> getCategoriesBelongInMajor(@PathVariable("majorCategoryId") int majorCategoryId) {
+    @GetMapping("/middle/{categoryId}")
+    public BaseResponse<List<GetCategoryRes>> getCategoriesBelongInMajor(@PathVariable("categoryId") int majorCategoryId) {
         try {
             List<GetCategoryRes> getCategoriesBelongInMajorRes = categoryProvider.getCategoriesBelongInMajor(majorCategoryId);
             return new BaseResponse<>(getCategoriesBelongInMajorRes);
@@ -62,8 +62,8 @@ public class CategoryController {
      * [GET] /app/categories/:majorCategoryId
      * @return BaseResponse<GetCategoryRes>
      */
-    @GetMapping("/{middleCategoryId}")
-    public BaseResponse<List<GetCategoryRes>> getCategoriesBelongInMiddle(@PathVariable("middleCategoryId") int middleCategoryId) {
+    @GetMapping("/sub/{categoryId}")
+    public BaseResponse<List<GetCategoryRes>> getCategoriesBelongInMiddle(@PathVariable("categoryId") int middleCategoryId) {
         try {
             List<GetCategoryRes> getCategoriesBelongInMiddleRes = categoryProvider.getCategoriesBelongInMiddle(middleCategoryId);
             return new BaseResponse<>(getCategoriesBelongInMiddleRes);
