@@ -36,15 +36,29 @@ public class ProductProvider {
                 throw new BaseException(BaseResponseStatus.INVALID_JWT);
             }
 
-            List<MainProductDto> manPadding = productDao.getMainProduct("남성의류", "패딩/점퍼");
-            List<MainProductDto> womenPadding = productDao.getMainProduct("여성의류", "패딩/점퍼");
-            List<MainProductDto> manShoes = productDao.getMainProduct("신발", "남성화");
-            List<MainProductDto> womenShoes = productDao.getMainProduct("신발", "여성화");
-            List<MainProductDto> sneakers = productDao.getMainProduct("신발", "스니커즈");
+            List<MainProductDto> manPadding = getMainProductDtos("남성의류", "패딩/점퍼");
+            List<MainProductDto> womenPadding = getMainProductDtos("여성의류", "패딩/점퍼");
+            List<MainProductDto> manShoes = getMainProductDtos("신발", "남성화");
+            List<MainProductDto> womenShoes = getMainProductDtos("신발", "여성화");
+            List<MainProductDto> sneakers = getMainProductDtos("신발", "스니커즈");
             GetMainProductRes getMainProductRes = new GetMainProductRes(manPadding, womenPadding, manShoes, womenShoes, sneakers);
             return getMainProductRes;
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    private List<MainProductDto> getMainProductDtos(String major, String middle) {
+        List<MainProductDto> dtos = productDao.getMainProduct(major, middle);
+        getImageUrl(dtos);
+        return dtos;
+    }
+
+    private void getImageUrl(List<MainProductDto> category) {
+        for (MainProductDto mainProductDto : category) {
+            int id = mainProductDto.getId();
+            String url = productDao.getImageUrl(id);
+            mainProductDto.setUrl(url);
         }
     }
 }

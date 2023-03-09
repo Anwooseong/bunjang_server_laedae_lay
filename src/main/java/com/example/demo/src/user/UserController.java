@@ -28,7 +28,7 @@ public class UserController {
 
     /**
      * 회원가입 API
-     * [POST] /create
+     * [POST] /app/users/create
      * BaseResponse<PostUserRes>
      */
     @PostMapping("/create")
@@ -67,7 +67,7 @@ public class UserController {
 
     /**
      * 로그인 API
-     * [POST] /create
+     * [POST] /app/users/create
      * BaseResponse<PostUserRes>
      */
     @PostMapping("/login")
@@ -110,6 +110,24 @@ public class UserController {
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 회원 계좌 추가 API
+     * [POST] /app/users/{userId}/accounts/{accountId}
+     * @return BaseResponse<PostCreateAccountRes>
+     */
+    @PostMapping("{userId}/accounts/{accountId}")
+    public BaseResponse<PostCreateAccountRes> createAccount(int userId, int accountId, @RequestBody PostCreateAccountReq postCreateAccountReq){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            PostCreateAccountRes postCreateAccountRes = userService.createAccount(userId, accountId, postCreateAccountReq);
+            return new BaseResponse<>(postCreateAccountRes);
+        }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
         }
     }
 

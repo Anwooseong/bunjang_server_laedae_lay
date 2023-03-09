@@ -78,4 +78,8 @@ public class UserService {
         }
     }
 
+    //최대2개, 기본값설정시 원래있던거는 해제, 있는 계좌인지, 계좌번호예외처리, 예금주 특수문자예외처리 (예금주, 은행, 계좌번호, 기본계좌 설정 유무)
+    public PostCreateAccountRes createAccount(int userId, int accountId, PostCreateAccountReq postCreateAccountReq) throws BaseException {
+        return null;
+    }
 }

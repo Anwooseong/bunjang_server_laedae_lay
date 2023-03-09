@@ -24,6 +24,11 @@ public class ProductController {
     private final ProductProvider productProvider;
     private final ProductService productService;
 
+    /**
+     * 상품 리스트 전체 조회  API
+     * [GET] /app/products
+     * @return BaseResponse<GetMainProductRes>
+     */
     @GetMapping("")
     public BaseResponse<GetMainProductRes> getMainProduct(){
         try {
