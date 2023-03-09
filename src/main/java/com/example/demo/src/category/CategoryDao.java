@@ -25,4 +25,24 @@ public class CategoryDao {
                         rs.getString("title")
                 ));
     }
+
+    public List<GetCategoryRes> getCategoriesBelongInMajor(int majorCategoryId) {
+        String getCategoriesBelongInMajorQuery = "select id, title from MiddleCategory where parent_id = ?";
+        String getCategoriesBelongInMajorParam = String.valueOf(majorCategoryId);
+        return this.jdbcTemplate.query(getCategoriesBelongInMajorQuery,
+                (rs, rowNum) -> new GetCategoryRes (
+                        rs.getInt("id"),
+                        rs.getString("title")
+                ), getCategoriesBelongInMajorParam);
+    }
+
+    public List<GetCategoryRes> getCategoriesBelongInMiddle(int middleCategoryId) {
+        String getCategoriesBelongInMiddleQuery = "select id, title from SubCategory where parent_id = ?";
+        String getCategoriesBelongInMiddleParam = String.valueOf(middleCategoryId);
+        return this.jdbcTemplate.query(getCategoriesBelongInMiddleQuery,
+                (rs, rowNum) -> new GetCategoryRes (
+                        rs.getInt("id"),
+                        rs.getString("title")
+                ), getCategoriesBelongInMiddleParam);
+    }
 }
