@@ -46,6 +46,7 @@ public enum BaseResponseStatus {
     GET_SEARCH_REGEX(false,2032,"검색창 첫 글자에 한글 자음이 있거나 한글 모음이 있습니다."),
     GET_BRAND_ORDER(false,2033,"쿼리 파라미터에서 order 부분을 다시 확인해주세요."),
     GET_BRAND_FOLLOWING(false,2034,"쿼리 파라미터에서 following 부분을 다시 확인해주세요."),
+    GET_POINT_STATUS(false,2035,"쿼리 파라미터에서 status 부분을 다시 확인해주세요."),
 
 
 
