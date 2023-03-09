@@ -113,4 +113,22 @@ public class UserController {
         }
     }
 
+    /**
+     * 회원 계좌 추가 API
+     * [POST] /app/users/{userId}/accounts/{accountId}
+     * @return BaseResponse<PostCreateAccountRes>
+     */
+    @PostMapping("{userId}/accounts/{accountId}")
+    public BaseResponse<PostCreateAccountRes> createAccount(int userId, int accountId, @RequestBody PostCreateAccountReq postCreateAccountReq){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            PostCreateAccountRes postCreateAccountRes = userService.createAccount(userId, accountId, postCreateAccountReq);
+            return new BaseResponse<>(postCreateAccountRes);
+        }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
 }
