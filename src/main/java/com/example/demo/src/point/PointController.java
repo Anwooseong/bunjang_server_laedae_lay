@@ -20,7 +20,7 @@ public class PointController {
     private final PointService pointService;
     private final PointProvider pointProvider;
 
-    @GetMapping("{userId}")
+    @GetMapping("{userId}/details")
     public BaseResponse<GetPointRes> getPoint(@PathVariable int userId, @RequestParam(value = "status", defaultValue = "all") String status){
 
         try {
