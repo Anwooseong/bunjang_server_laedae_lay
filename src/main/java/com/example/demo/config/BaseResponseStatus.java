@@ -56,7 +56,10 @@ public enum BaseResponseStatus {
     POST_ACCOUNT_HOLDER_NAME_REGEX(false,2041,"예금주명은 한글 영어만 가능합니다."),
     POST_CREATE_ACCOUNT_FAIL(false,2042,"계좌 추가에 실패하였습니다."),
     POST_CREATE_DEFAULT_ACCOUNT_FAIL(false,2043,"계좌 기본값 설정에 실패하였습니다."),
-
+    POST_ACCOUNT_NUMBER_REGEX(false,2044,"계좌 추가할 때 계좌 번호는 숫자만 입력해야합니다."),
+    PATCH_ACCOUNT_NUMBER_REGEX(false,2045,"계좌 수정할 때 계좌 번호는 숫자만 입력해야합니다."),
+    PATCH_MODIFY_ACCOUNT_FAIL(false,2046,"계좌 수정에 실패하였습니다."),
+    PATCH_MODIFY_DEFAULT_ACCOUNT_FAIL(false,2047,"계좌 기본값 설정 수정에 실패하였습니다."),
 
 
 

@@ -90,6 +90,9 @@ public class UserService {
         if (!ValidationRegex.isRegexHolderName(postCreateAccountReq.getHolderName())) {
             throw new BaseException(POST_ACCOUNT_HOLDER_NAME_REGEX);
         }
+        if (!ValidationRegex.isRegexAccount(postCreateAccountReq.getAccountNumber())) {
+            throw new BaseException(POST_ACCOUNT_NUMBER_REGEX);
+        }
 
         try {
 
@@ -107,5 +110,30 @@ public class UserService {
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public PatchModifyAccountRes modifyAccount(int userId, int accountId, Account account) throws BaseException{
+        if (!ValidationRegex.isRegexHolderName(account.getHolderName())) {
+            throw new BaseException(POST_ACCOUNT_HOLDER_NAME_REGEX);
+        }
+        if (!ValidationRegex.isRegexAccount(account.getAccountNumber())) {
+            throw new BaseException(PATCH_ACCOUNT_NUMBER_REGEX);
+        }
+        try {
+            if (account.isDefaultAccountCheck()) {
+                int isSuccess =userDao.modifyDefaultAccount(userId, accountId);
+                if (isSuccess == 0) {
+                    throw new BaseException(PATCH_MODIFY_DEFAULT_ACCOUNT_FAIL);
+                }
+            }
+            int result = userDao.modifyAccount(userId, accountId, account);
+            if (result == 0) {
+                throw new BaseException(PATCH_MODIFY_ACCOUNT_FAIL);
+            }
+            return new PatchModifyAccountRes(accountId, "계좌 수정 완료하였습니다.");
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
     }
 }

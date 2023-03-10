@@ -130,4 +130,10 @@ public class UserDao {
         Object[] createAccountParams = new Object[]{createId, userId};
         return this.jdbcTemplate.update(modifyDefaultAccountQuery, createAccountParams);
     }
+
+    public int modifyAccount(int userId, int accountId, Account account) {
+        String modifyAccountQuery = "update UserAccount set holder_name=?, bank_name =?, account_number =? where id = ? and status='A'";
+        Object[] modifyAccountParams = new Object[]{account.getHolderName(), account.getBankName(), account.getAccountNumber(), accountId};
+        return this.jdbcTemplate.update(modifyAccountQuery, modifyAccountParams);
+    }
 }
