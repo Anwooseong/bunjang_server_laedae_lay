@@ -187,4 +187,22 @@ public class UserController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+    /**
+     * 회원 최근 접속일 수정 API
+     * [PATCH]/app/users/{userId}/last-access
+     * @return BaseResponse<PatchLastAccessRes>
+     */
+    @PatchMapping("/{userId}/last-access")
+    public BaseResponse<PatchLastAccessRes> modifyLastAccess(@PathVariable int userId){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            PatchLastAccessRes patchLastAccessRes = userService.modifyLastAccess(userId);
+            return new BaseResponse<>(patchLastAccessRes);
+        }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
 }

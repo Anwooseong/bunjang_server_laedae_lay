@@ -87,4 +87,12 @@ public class UserProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int checkReportStore(int userId) throws BaseException{
+        try {
+            return userDao.checkReportStore(userId);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
