@@ -63,6 +63,9 @@ public enum BaseResponseStatus {
     PATCH_DELETE_ACCOUNT_FAIL(false,2048,"계좌 삭제에 실패하였습니다."),
     PATCH_LAST_ACCESS_DATE_RENEW_FAIL(false,2049,"최근 접속일 갱신에 실패하였습니다."),
     PATCH_LIKE_CANCEL_FAIL(false,2050,"찜 취소에 실패하였습니다."),
+    POST_PAYMENT_POINT_LITTLE(false,2051,"사용 가능한 번개 포인트 이하의 값을 입력해야합니다."),
+    POST_PAYMENT_AGREEMENT(false,2052,"개인정보 제 3자 제공동의와 결제대행 서비스 이용 약관 동의를 확인해주세요."),
+    POST_PAYMENT_METHOD_EMPTY(false,2053,"결제 수단을 입력해주세요."),
 
 
 
