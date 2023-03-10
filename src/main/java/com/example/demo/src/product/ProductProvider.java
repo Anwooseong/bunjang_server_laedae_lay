@@ -4,6 +4,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.GetMainProductRes;
+import com.example.demo.src.product.model.GetSearchProductRes;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,30 @@ public class ProductProvider {
             int id = mainProductDto.getId();
             String url = productDao.getImageUrl(id);
             mainProductDto.setUrl(url);
+        }
+    }
+
+    public List<GetSearchProductRes> getSearchProduct(String search, String order) throws BaseException{ //order = "recent"(최신순), "price-asc"(저가순), "price-desc"(고가순)
+        if (!(order.equals("recent") || order.equals("price-asc") || order.equals("price-desc"))) {
+            throw new BaseException(BaseResponseStatus.GET_SEARCH_PRODUCT_PARAMETER);
+        }
+        String param;
+        if (order.equals("recent")) {
+            param="updated_at desc";
+        } else if (order.equals("price-asc")) {
+            param="price asc";
+        } else {
+            param="price desc";
+        }
+        try {
+            List<GetSearchProductRes> getSearchProductRes = productDao.getSearchProduct(search, param);
+            for (GetSearchProductRes getSearchProductRe : getSearchProductRes) {
+                String imageUrl = productDao.getImageUrl(getSearchProductRe.getProductId());
+                getSearchProductRe.setUrl(imageUrl);
+            }
+            return getSearchProductRes;
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 }

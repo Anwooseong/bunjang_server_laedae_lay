@@ -2,6 +2,7 @@ package com.example.demo.src.product;
 
 import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.GetMainProductRes;
+import com.example.demo.src.product.model.GetSearchProductRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -47,5 +48,31 @@ public class ProductDao {
         String getImageUrlQuery = "select url from ProductImg join Product on Product.id = ProductImg.product_id where (ProductImg.id, ProductImg.product_id, ProductImg.url)\n" +
                 " in (select id, product_id, url from ProductImg where id in (select min(id) from ProductImg group by product_id)) and Product.id = ?";
         return this.jdbcTemplate.queryForObject(getImageUrlQuery, String.class, id);
+    }
+
+    public List<GetSearchProductRes> getSearchProduct(String search, String param) {
+
+        String getSearchProductQuery = "select id,\n" +
+                "       title,\n" +
+                "       price,\n" +
+                "       CASE\n" +
+                "           WHEN transaction_status = 'FORSALE'\n" +
+                "               THEN '판매중'\n" +
+                "           WHEN transaction_status = 'R'\n" +
+                "               THEN '예약중'\n" +
+                "           ELSE '판매완료'\n" +
+                "           END\n" +
+                "from Product\n" +
+                "where title like '%"+search+"%'\n" +
+                "  and status = 'A'\n" +
+                "order by "+param;
+        Object[] getSearchProductParams = new Object[]{param};
+        return this.jdbcTemplate.query(getSearchProductQuery,
+                (rs, rowNum) -> new GetSearchProductRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getInt(3),
+                        rs.getString(4)
+                ));
     }
 }

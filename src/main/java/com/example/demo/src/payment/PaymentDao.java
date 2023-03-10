@@ -55,7 +55,7 @@ public class PaymentDao {
     }
 
     public void modifyStock(int stock, int productId) {
-        String modifyStockStatus = "update Product set amount = ?, status='SO' where id =?";
+        String modifyStockStatus = "update Product set amount = ?, transaction_status='SO' where id =? and status = 'A'";
         Object[] modifyStockParams = new Object[]{stock, productId};
         this.jdbcTemplate.update(modifyStockStatus, modifyStockParams);
     }
