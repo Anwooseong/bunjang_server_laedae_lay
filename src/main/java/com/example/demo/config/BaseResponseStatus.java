@@ -60,6 +60,7 @@ public enum BaseResponseStatus {
     PATCH_ACCOUNT_NUMBER_REGEX(false,2045,"계좌 수정할 때 계좌 번호는 숫자만 입력해야합니다."),
     PATCH_MODIFY_ACCOUNT_FAIL(false,2046,"계좌 수정에 실패하였습니다."),
     PATCH_MODIFY_DEFAULT_ACCOUNT_FAIL(false,2047,"계좌 기본값 설정 수정에 실패하였습니다."),
+    PATCH_DELETE_ACCOUNT_FAIL(false,2048,"계좌 삭제에 실패하였습니다."),
 
 
 

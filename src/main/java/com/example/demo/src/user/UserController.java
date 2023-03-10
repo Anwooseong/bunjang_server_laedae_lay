@@ -134,8 +134,7 @@ public class UserController {
     /**
      * 회원 계좌 수정 API
      * [PATCH] /app/users/{userId}/accounts/{accountId}
-     *
-     * @return BaseResponse<>
+     * @return BaseResponse<PatchModifyAccountRes>
      */
     @PatchMapping("{userId}/accounts/{accountId}")
     public BaseResponse<PatchModifyAccountRes> modifyAccount(@PathVariable("userId") int userId, @PathVariable("accountId") int accountId, @RequestBody Account account) {
@@ -145,6 +144,24 @@ public class UserController {
 
             PatchModifyAccountRes patchModifyAccountRes = userService.modifyAccount(userId, accountId, account);
             return new BaseResponse<>(patchModifyAccountRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 회원 계좌 삭제 API
+     * [PATCH] /app/users/{userId}/accounts/{accountId}/status
+     * @return BaseResponse<PatchDeleteAccountRes>
+     */
+    @PatchMapping("/{userId}/accounts/{accountId}/status")
+    public BaseResponse<PatchDeleteAccountRes> deleteAccount(@PathVariable("userId") int userId, @PathVariable("accountId") int accountId) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+            PatchDeleteAccountRes patchDeleteAccountRes = userService.deleteAccount(userId, accountId);
+            return new BaseResponse<>(patchDeleteAccountRes);
+
         } catch (BaseException e) {
             return new BaseResponse<>((e.getStatus()));
         }

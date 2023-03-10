@@ -136,4 +136,34 @@ public class UserService {
         }
 
     }
+
+    public PatchDeleteAccountRes deleteAccount(int userId, int accountId) throws BaseException{
+        try {
+
+            if (userDao.checkMaximumAccount(userId) == 1) { //유저가 계좌 2개 등록되어있고 삭제하고 싶은 계좌가 기본값 계좌로 설정되어있을 때 기본값을 다른 계좌로 변경
+                if (userDao.checkDefaultAccount(userId, accountId) == 1) { //삭제하고 싶은 계좌가 기본값 계좌로 설정되어있을 때 기본값을 다른 계좌로 변경
+                    int changeId = userDao.changeDefaultAccount(userId, accountId);
+                    if (changeId == 0) {
+                        throw new BaseException(PATCH_MODIFY_DEFAULT_ACCOUNT_FAIL);
+                    }
+                }
+                //삭제
+                int delete = userDao.deleteAccount(accountId);
+                if (delete == 0) {
+                    throw new BaseException(PATCH_DELETE_ACCOUNT_FAIL);
+                }
+                return new PatchDeleteAccountRes(accountId, "정상적으로 계좌가 삭제되었습니다.");
+            }
+            userDao.changeDefaultAccount(userId, null);
+            //삭제
+            int delete = userDao.deleteAccount(accountId);
+            if (delete == 0) {
+                throw new BaseException(PATCH_DELETE_ACCOUNT_FAIL);
+            }
+            return new PatchDeleteAccountRes(accountId, "정상적으로 계좌가 삭제되었습니다.");
+
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

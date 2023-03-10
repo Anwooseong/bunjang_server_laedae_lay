@@ -136,4 +136,22 @@ public class UserDao {
         Object[] modifyAccountParams = new Object[]{account.getHolderName(), account.getBankName(), account.getAccountNumber(), accountId};
         return this.jdbcTemplate.update(modifyAccountQuery, modifyAccountParams);
     }
+
+    public int checkDefaultAccount(int userId, int accountId) {
+        String checkAccountQuery = "select exists(select id from User where default_account_id = ? and id = ? and status='A')";
+        Object[] checkAccountParams = new Object[]{accountId, userId};
+        return this.jdbcTemplate.queryForObject(checkAccountQuery, int.class, checkAccountParams);
+
+    }
+
+    public int changeDefaultAccount(int userId, Integer accountId) {
+        String modifyDefaultAccountQuery = "update User set default_account_id=(select id from UserAccount where (id) not in ((?)) and user_id=? and status='A') where id = ?";
+        Object[] createAccountParams = new Object[]{accountId, userId, userId};
+        return this.jdbcTemplate.update(modifyDefaultAccountQuery, createAccountParams);
+    }
+
+    public int deleteAccount(int accountId) {
+        String deleteAccountQuery = "update UserAccount set status='D' where id = ? and status ='A'";
+        return this.jdbcTemplate.update(deleteAccountQuery, accountId);
+    }
 }
