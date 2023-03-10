@@ -33,13 +33,27 @@ public class ValidationRegex {
         return matcher.find();
     }
 
-//[^\W\d_ㄱ-ㅎㅏ-ㅣ가-힣]
-public static boolean isRegexSearch(String target) {
-    String regex = "[^ㄱ-ㅎㅏ-ㅣ\\x20]";
-    Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-    Matcher matcher = pattern.matcher(target);
-    return matcher.find();
-}
+    //[^\W\d_ㄱ-ㅎㅏ-ㅣ가-힣]
+    public static boolean isRegexSearch(String target) {
+        String regex = "[^ㄱ-ㅎㅏ-ㅣ\\x20]";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
+
+    public static boolean isRegexHolderName(String target) {
+        String regex = "^[a-zA-Zㄱ-ㅎ가-힣]*$";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
+    public static boolean isRegexAccount(String target) {
+        String regex = "^[0-9]+$";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
+
     public static boolean isRegexBirth(String target) {
         String regex = "\\d{2}([0]\\d|[1][0-2])([0][1-9]|[1-2]\\d|[3][0-1])";
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);

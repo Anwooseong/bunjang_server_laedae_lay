@@ -103,4 +103,70 @@ public class UserDao {
                 int.class,
                 createLoginReportParams);
     }
+
+    public int checkMaximumAccount(int userId) {
+        String checkMaximumAccountQuery = "select exists(select min(id), user_id, status from UserAccount group by user_id,status having count(*)=2 and status='A' and user_id = ?)";
+        return this.jdbcTemplate.queryForObject(checkMaximumAccountQuery, int.class, userId);
+    }
+
+    public int checkAccount(int userId, String accountNumber) {
+        String checkAccountQuery = "select exists(select id from UserAccount where user_id = ? and account_number = ? and status = 'A')";
+        Object[] checkAccountParams = new Object[]{userId, accountNumber};
+        return this.jdbcTemplate.queryForObject(checkAccountQuery, int.class, checkAccountParams);
+    }
+
+    public int createAccount(int userId, PostCreateAccountReq postCreateAccountReq) {
+        String createAccountQuery = "insert into UserAccount(user_id, holder_name, bank_name, account_number)\n" +
+                "    VALUES (?,?,?,?)";
+        Object[] createAccountParams = new Object[]{userId, postCreateAccountReq.getHolderName(), postCreateAccountReq.getBankName(), postCreateAccountReq.getAccountNumber()};
+        this.jdbcTemplate.update(createAccountQuery, createAccountParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int modifyDefaultAccount(int userId, int createId) {
+        String modifyDefaultAccountQuery = "update User set default_account_id=? where id = ? and status='A'";
+        Object[] createAccountParams = new Object[]{createId, userId};
+        return this.jdbcTemplate.update(modifyDefaultAccountQuery, createAccountParams);
+    }
+
+    public int modifyAccount(int userId, int accountId, Account account) {
+        String modifyAccountQuery = "update UserAccount set holder_name=?, bank_name =?, account_number =? where id = ? and status='A'";
+        Object[] modifyAccountParams = new Object[]{account.getHolderName(), account.getBankName(), account.getAccountNumber(), accountId};
+        return this.jdbcTemplate.update(modifyAccountQuery, modifyAccountParams);
+    }
+
+    public int checkDefaultAccount(int userId, int accountId) {
+        String checkAccountQuery = "select exists(select id from User where default_account_id = ? and id = ? and status='A')";
+        Object[] checkAccountParams = new Object[]{accountId, userId};
+        return this.jdbcTemplate.queryForObject(checkAccountQuery, int.class, checkAccountParams);
+
+    }
+
+    public int changeDefaultAccount(int userId, Integer accountId) {
+        String modifyDefaultAccountQuery = "update User set default_account_id=(select id from UserAccount where (id) not in ((?)) and user_id=? and status='A') where id = ?";
+        Object[] createAccountParams = new Object[]{accountId, userId, userId};
+        return this.jdbcTemplate.update(modifyDefaultAccountQuery, createAccountParams);
+    }
+
+    public int deleteAccount(int accountId) {
+        String deleteAccountQuery = "update UserAccount set status='D' where id = ? and status ='A'";
+        return this.jdbcTemplate.update(deleteAccountQuery, accountId);
+    }
+
+    public List<GetAccountRes> getAccount(int userId) {
+        String getAccountQuery = "select UA.id, UA.bank_name, UA.account_number, UA.holder_name,\n" +
+                "       IF(User.default_account_id = UA.id, true, false) as default_account\n" +
+                "       from User join UserAccount UA on User.id = UA.user_id where UA.status ='A' and User.id=?";
+        return this.jdbcTemplate.query(getAccountQuery,
+                (rs,rowNum)->new GetAccountRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getBoolean(5)
+                )
+                ,userId);
+    }
 }

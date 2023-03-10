@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.example.demo.config.BaseResponseStatus.*;
 
 //Provider : Read의 비즈니스 로직 처리
@@ -74,6 +76,15 @@ public class UserProvider {
             return new PostLoginRes(userId, user.getStoreName(), user.getName(), jwt);
         } else {
             throw new BaseException(FAILED_TO_LOGIN); // 3014,"없는 아이디거나 비밀번호가 틀렸습니다."
+        }
+    }
+
+    public List<GetAccountRes> getAccount(int userId) throws BaseException{
+        try {
+            List<GetAccountRes> getAccountRes = userDao.getAccount(userId);
+            return getAccountRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 }

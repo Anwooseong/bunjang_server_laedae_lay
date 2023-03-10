@@ -9,9 +9,10 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCreateAccountReq {
-    private String holderName;
+public class GetAccountRes {
+    private int id;
     private String bankName;
     private String accountNumber;
-    private boolean defaultAccountCheck;
+    private String holderName;
+    private boolean defaultAccount;
 }
