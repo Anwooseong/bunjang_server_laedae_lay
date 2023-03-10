@@ -181,4 +181,9 @@ public class UserDao {
                 int.class,
                 userId);
     }
+
+    public int modifyLikeStatus(int userId, int myProductId) {
+        String modifyLikeStatusQuery = "update MyProduct set status='D' where user_id=? and status='A' and id = ?";
+        return this.jdbcTemplate.update(modifyLikeStatusQuery, userId, myProductId);
+    }
 }

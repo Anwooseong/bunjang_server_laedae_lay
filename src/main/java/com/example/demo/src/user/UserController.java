@@ -205,4 +205,22 @@ public class UserController {
         }
     }
 
+    /**
+     * 회원 찜 목록 취소 API
+     * [PATCH] /app/users/{userId}/likes/{myProductId}/status
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/{userId}/likes/{myProductId}/status")
+    public BaseResponse<String> modifyUserLikeStatus(@PathVariable int userId, @PathVariable int myProductId){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            String patchUserLikeRes = userService.modifyLikeStatus(userId, myProductId);
+            return new BaseResponse<>(patchUserLikeRes);
+        }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
 }

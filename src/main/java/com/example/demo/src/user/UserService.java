@@ -175,10 +175,22 @@ public class UserService {
         try {
             int result = userDao.modifyLastAccess(userId);
             if(result == 0){
-                throw new BaseException(DATABASE_ERROR);
+                throw new BaseException(PATCH_LAST_ACCESS_DATE_RENEW_FAIL);
             }
             return new PatchLastAccessRes(userId, "최근 접속일이 갱신되었습니다.");
         }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public String modifyLikeStatus(int userId, int myProductId) throws BaseException{
+        try {
+            int result = userDao.modifyLikeStatus(userId, myProductId);
+            if (result == 0) {
+                throw new BaseException(PATCH_LIKE_CANCEL_FAIL);
+            }
+            return "찜 취소가 성공적으로 되었습니다.";
+        } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
