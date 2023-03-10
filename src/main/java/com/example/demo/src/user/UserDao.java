@@ -154,4 +154,19 @@ public class UserDao {
         String deleteAccountQuery = "update UserAccount set status='D' where id = ? and status ='A'";
         return this.jdbcTemplate.update(deleteAccountQuery, accountId);
     }
+
+    public List<GetAccountRes> getAccount(int userId) {
+        String getAccountQuery = "select UA.id, UA.bank_name, UA.account_number, UA.holder_name,\n" +
+                "       IF(User.default_account_id = UA.id, true, false) as default_account\n" +
+                "       from User join UserAccount UA on User.id = UA.user_id where UA.status ='A' and User.id=?";
+        return this.jdbcTemplate.query(getAccountQuery,
+                (rs,rowNum)->new GetAccountRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getBoolean(5)
+                )
+                ,userId);
+    }
 }

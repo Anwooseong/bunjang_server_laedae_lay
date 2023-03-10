@@ -10,6 +10,7 @@ import com.example.demo.utils.JwtService;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.*;
@@ -112,6 +113,26 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    /**
+     * 회원 계좌 관리 조회 API
+     * [GET] /app/users/{userId}/accounts
+     *
+     * @return BaseResponse<GetAccountRes>
+     */
+    @GetMapping("/{userId}/accounts")
+    public BaseResponse<List<GetAccountRes>> getAccount(@PathVariable("userId") int userId) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            List<GetAccountRes> getAccountRes = userProvider.getAccount(userId);
+            return new BaseResponse<>(getAccountRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
 
     /**
      * 회원 계좌 추가 API
