@@ -66,6 +66,10 @@ public enum BaseResponseStatus {
     POST_PAYMENT_POINT_LITTLE(false,2051,"사용 가능한 번개 포인트 이하의 값을 입력해야합니다."),
     POST_PAYMENT_AGREEMENT(false,2052,"개인정보 제 3자 제공동의와 결제대행 서비스 이용 약관 동의를 확인해주세요."),
     POST_PAYMENT_METHOD_EMPTY(false,2053,"결제 수단을 입력해주세요."),
+    POST_PRODUCT_SOLD_OUT(false,2054,"재고가 없는 상품입니다."),
+    GET_DELIVERY_PARAMETER(false,2055,"쿼리 파라미터에서 status가 sell, receive, register 중에 있어야합니다."),
+    POST_MY_PRODUCT_EXISTS(false,2056,"이미 찜 목록에 추가되어있는 상품입니다."),
+    GET_SEARCH_PRODUCT_PARAMETER(false,2057,"쿼리 파라미터에서 order이 recent(최신순), price-asc(저가순), price-desc(고가순) 중에 있어야합니다."),
 
 
 
