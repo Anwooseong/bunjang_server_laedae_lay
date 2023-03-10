@@ -2,6 +2,7 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.config.BaseException;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
@@ -162,6 +163,33 @@ public class UserService {
             }
             return new PatchDeleteAccountRes(accountId, "정상적으로 계좌가 삭제되었습니다.");
 
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PatchLastAccessRes modifyLastAccess(int userId) throws BaseException{
+        if (userProvider.checkReportStore(userId)==1){
+            throw new BaseException(BaseResponseStatus.POST_USERS_REPORT_USER);
+        }
+        try {
+            int result = userDao.modifyLastAccess(userId);
+            if(result == 0){
+                throw new BaseException(PATCH_LAST_ACCESS_DATE_RENEW_FAIL);
+            }
+            return new PatchLastAccessRes(userId, "최근 접속일이 갱신되었습니다.");
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public String modifyLikeStatus(int userId, int myProductId) throws BaseException{
+        try {
+            int result = userDao.modifyLikeStatus(userId, myProductId);
+            if (result == 0) {
+                throw new BaseException(PATCH_LIKE_CANCEL_FAIL);
+            }
+            return "찜 취소가 성공적으로 되었습니다.";
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }

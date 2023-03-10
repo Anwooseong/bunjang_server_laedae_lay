@@ -61,6 +61,8 @@ public enum BaseResponseStatus {
     PATCH_MODIFY_ACCOUNT_FAIL(false,2046,"계좌 수정에 실패하였습니다."),
     PATCH_MODIFY_DEFAULT_ACCOUNT_FAIL(false,2047,"계좌 기본값 설정 수정에 실패하였습니다."),
     PATCH_DELETE_ACCOUNT_FAIL(false,2048,"계좌 삭제에 실패하였습니다."),
+    PATCH_LAST_ACCESS_DATE_RENEW_FAIL(false,2049,"최근 접속일 갱신에 실패하였습니다."),
+    PATCH_LIKE_CANCEL_FAIL(false,2050,"찜 취소에 실패하였습니다."),
 
 
 

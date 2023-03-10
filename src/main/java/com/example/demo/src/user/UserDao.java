@@ -169,4 +169,21 @@ public class UserDao {
                 )
                 ,userId);
     }
+
+    public int modifyLastAccess(int userId) {
+        String modifyLastAccessQuery = "update User set last_access_date=now() where id=? and status='A'";
+        return this.jdbcTemplate.update(modifyLastAccessQuery, userId);
+    }
+
+    public int checkReportStore(int userId) {
+        String checkReportQuery = "select exists(select id from User where id = ? and status = 'S')";
+        return this.jdbcTemplate.queryForObject(checkReportQuery,
+                int.class,
+                userId);
+    }
+
+    public int modifyLikeStatus(int userId, int myProductId) {
+        String modifyLikeStatusQuery = "update MyProduct set status='D' where user_id=? and status='A' and id = ?";
+        return this.jdbcTemplate.update(modifyLikeStatusQuery, userId, myProductId);
+    }
 }

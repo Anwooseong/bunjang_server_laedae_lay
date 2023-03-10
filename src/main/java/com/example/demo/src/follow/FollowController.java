@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/app") //uri -> 팔로잉이랑 팔로워 각각 있기 때문에 /app으로만 작성하였음
 @RequiredArgsConstructor
 public class FollowController {
     private final JwtService jwtService;

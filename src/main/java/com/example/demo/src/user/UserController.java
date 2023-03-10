@@ -187,4 +187,40 @@ public class UserController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+    /**
+     * 회원 최근 접속일 수정 API
+     * [PATCH]/app/users/{userId}/last-access
+     * @return BaseResponse<PatchLastAccessRes>
+     */
+    @PatchMapping("/{userId}/last-access")
+    public BaseResponse<PatchLastAccessRes> modifyLastAccess(@PathVariable int userId){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            PatchLastAccessRes patchLastAccessRes = userService.modifyLastAccess(userId);
+            return new BaseResponse<>(patchLastAccessRes);
+        }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 회원 찜 목록 취소 API
+     * [PATCH] /app/users/{userId}/likes/{myProductId}/status
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/{userId}/likes/{myProductId}/status")
+    public BaseResponse<String> modifyUserLikeStatus(@PathVariable int userId, @PathVariable int myProductId){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            String patchUserLikeRes = userService.modifyLikeStatus(userId, myProductId);
+            return new BaseResponse<>(patchUserLikeRes);
+        }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
 }
