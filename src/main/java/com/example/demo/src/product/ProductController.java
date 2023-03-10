@@ -31,7 +31,7 @@ public class ProductController {
      * [GET] /app/products
      * @return BaseResponse<GetMainProductRes>
      */
-    @GetMapping("/index")
+    @GetMapping("/main")
     public BaseResponse<GetMainProductRes> getMainProduct(){
         try {
             int userId = jwtService.getUserId();
