@@ -10,6 +10,7 @@ import com.example.demo.utils.JwtService;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.*;
@@ -114,18 +115,109 @@ public class UserController {
     }
 
     /**
-     * 회원 계좌 추가 API
-     * [POST] /app/users/{userId}/accounts/{accountId}
-     * @return BaseResponse<PostCreateAccountRes>
+     * 회원 계좌 관리 조회 API
+     * [GET] /app/users/{userId}/accounts
+     *
+     * @return BaseResponse<GetAccountRes>
      */
-    @PostMapping("{userId}/accounts/{accountId}")
-    public BaseResponse<PostCreateAccountRes> createAccount(int userId, int accountId, @RequestBody PostCreateAccountReq postCreateAccountReq){
+    @GetMapping("/{userId}/accounts")
+    public BaseResponse<List<GetAccountRes>> getAccount(@PathVariable("userId") int userId) {
         try {
             int userIdByJwt = jwtService.getUserId();
             jwtService.validateUserByJwt(userIdByJwt, userId);
 
-            PostCreateAccountRes postCreateAccountRes = userService.createAccount(userId, accountId, postCreateAccountReq);
+            List<GetAccountRes> getAccountRes = userProvider.getAccount(userId);
+            return new BaseResponse<>(getAccountRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+
+    /**
+     * 회원 계좌 추가 API
+     * [POST] /app/users/{userId}/accounts/{accountId}
+     * @return BaseResponse<PostCreateAccountRes>
+     */
+    @PostMapping("{userId}/accounts")
+    public BaseResponse<PostCreateAccountRes> createAccount(@PathVariable("userId") int userId, @RequestBody PostCreateAccountReq postCreateAccountReq){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            PostCreateAccountRes postCreateAccountRes = userService.createAccount(userId, postCreateAccountReq);
             return new BaseResponse<>(postCreateAccountRes);
+        }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 회원 계좌 수정 API
+     * [PATCH] /app/users/{userId}/accounts/{accountId}
+     * @return BaseResponse<PatchModifyAccountRes>
+     */
+    @PatchMapping("{userId}/accounts/{accountId}")
+    public BaseResponse<PatchModifyAccountRes> modifyAccount(@PathVariable("userId") int userId, @PathVariable("accountId") int accountId, @RequestBody Account account) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            PatchModifyAccountRes patchModifyAccountRes = userService.modifyAccount(userId, accountId, account);
+            return new BaseResponse<>(patchModifyAccountRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 회원 계좌 삭제 API
+     * [PATCH] /app/users/{userId}/accounts/{accountId}/status
+     * @return BaseResponse<PatchDeleteAccountRes>
+     */
+    @PatchMapping("/{userId}/accounts/{accountId}/status")
+    public BaseResponse<PatchDeleteAccountRes> deleteAccount(@PathVariable("userId") int userId, @PathVariable("accountId") int accountId) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+            PatchDeleteAccountRes patchDeleteAccountRes = userService.deleteAccount(userId, accountId);
+            return new BaseResponse<>(patchDeleteAccountRes);
+
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+    /**
+     * 회원 최근 접속일 수정 API
+     * [PATCH]/app/users/{userId}/last-access
+     * @return BaseResponse<PatchLastAccessRes>
+     */
+    @PatchMapping("/{userId}/last-access")
+    public BaseResponse<PatchLastAccessRes> modifyLastAccess(@PathVariable int userId){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            PatchLastAccessRes patchLastAccessRes = userService.modifyLastAccess(userId);
+            return new BaseResponse<>(patchLastAccessRes);
+        }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 회원 찜 목록 취소 API
+     * [PATCH] /app/users/{userId}/likes/{myProductId}/status
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/{userId}/likes/{myProductId}/status")
+    public BaseResponse<String> modifyUserLikeStatus(@PathVariable int userId, @PathVariable int myProductId){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            String patchUserLikeRes = userService.modifyLikeStatus(userId, myProductId);
+            return new BaseResponse<>(patchUserLikeRes);
         }catch (BaseException e){
             return new BaseResponse<>((e.getStatus()));
         }

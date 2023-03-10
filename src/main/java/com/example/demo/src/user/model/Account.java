@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCreateAccountReq {
+public class Account {
     private String holderName;
     private String bankName;
     private String accountNumber;
