@@ -24,7 +24,7 @@ public class PointDao {
     }
 
     public String getTotalPoint(int userId) {
-        String getTotalPointQuery = "select CONCAT(sum(point), '원') as total_point from BungaePoint where user_id = ? and status = 'A'";
+        String getTotalPointQuery = "select CONCAT(sum(point)) as total_point from BungaePoint where user_id = ? and status = 'A'";
         return this.jdbcTemplate.queryForObject(getTotalPointQuery, String.class, userId);
     }
 
