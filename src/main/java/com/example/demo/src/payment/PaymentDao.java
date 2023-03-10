@@ -48,4 +48,20 @@ public class PaymentDao {
                 )
                 , lastInsertedId);
     }
+
+    public int getStock(int productId) {
+        String getStockQuery = "select amount from Product where id = ?";
+        return this.jdbcTemplate.queryForObject(getStockQuery,int.class, productId);
+    }
+
+    public void modifyStock(int stock, int productId) {
+        String modifyStockStatus = "update Product set amount = ?, status='SO' where id =?";
+        Object[] modifyStockParams = new Object[]{stock, productId};
+        this.jdbcTemplate.update(modifyStockStatus, modifyStockParams);
+    }
+
+    public void createProductDelivery(int productId) {
+        String createProductDeliveryQuery = "insert into ProductDelivery(product_id) values(?)";
+        this.jdbcTemplate.update(createProductDeliveryQuery, productId);
+    }
 }

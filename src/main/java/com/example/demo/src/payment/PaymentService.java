@@ -30,15 +30,25 @@ public class PaymentService {
         }
         try {
             int totalPoint = paymentDao.getTotalPoint(postPaymentReq.getUserId());
-            if (postPaymentReq.getUsedPoint() > totalPoint){
+            if (postPaymentReq.getUsedPoint() > totalPoint) {
                 throw new BaseException(POST_PAYMENT_POINT_LITTLE);
             }
         } catch (Exception e) {
             throw new BaseException(POST_PAYMENT_POINT_LITTLE);
         }
         try {
-
+            int stock = paymentDao.getStock(productId);
+            if (stock < 1) {
+                throw new BaseException(POST_PRODUCT_SOLD_OUT);
+            }
+            stock -= 1;
+            paymentDao.modifyStock(stock, productId);
+        } catch (Exception e) {
+            throw new BaseException(POST_PRODUCT_SOLD_OUT);
+        }
+        try {
             int lastInsertedId = paymentDao.createPayment(productId, postPaymentReq);
+            paymentDao.createProductDelivery(productId);
             PostPaymentRes postPaymentRes = paymentDao.getPayment(lastInsertedId);
             return postPaymentRes;
         } catch (Exception e) {
