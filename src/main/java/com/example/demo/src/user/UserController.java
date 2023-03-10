@@ -118,13 +118,13 @@ public class UserController {
      * [POST] /app/users/{userId}/accounts/{accountId}
      * @return BaseResponse<PostCreateAccountRes>
      */
-    @PostMapping("{userId}/accounts/{accountId}")
-    public BaseResponse<PostCreateAccountRes> createAccount(int userId, int accountId, @RequestBody PostCreateAccountReq postCreateAccountReq){
+    @PostMapping("{userId}/accounts")
+    public BaseResponse<PostCreateAccountRes> createAccount(@PathVariable("userId") int userId, @RequestBody PostCreateAccountReq postCreateAccountReq){
         try {
             int userIdByJwt = jwtService.getUserId();
             jwtService.validateUserByJwt(userIdByJwt, userId);
 
-            PostCreateAccountRes postCreateAccountRes = userService.createAccount(userId, accountId, postCreateAccountReq);
+            PostCreateAccountRes postCreateAccountRes = userService.createAccount(userId, postCreateAccountReq);
             return new BaseResponse<>(postCreateAccountRes);
         }catch (BaseException e){
             return new BaseResponse<>((e.getStatus()));

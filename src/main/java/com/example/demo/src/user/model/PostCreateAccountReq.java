@@ -13,5 +13,5 @@ public class PostCreateAccountReq {
     private String holderName;
     private String bankName;
     private String accountNumber;
-
+    private boolean defaultAccountCheck;
 }

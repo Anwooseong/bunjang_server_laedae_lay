@@ -5,6 +5,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
+import com.example.demo.utils.ValidationRegex;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,8 +79,33 @@ public class UserService {
         }
     }
 
-    //최대2개, 기본값설정시 원래있던거는 해제, 있는 계좌인지, 계좌번호예외처리, 예금주 특수문자예외처리 (예금주, 은행, 계좌번호, 기본계좌 설정 유무)
-    public PostCreateAccountRes createAccount(int userId, int accountId, PostCreateAccountReq postCreateAccountReq) throws BaseException {
-        return null;
+    //최대2개, 기본값설정시 원래있던거는 해제, 있는 계좌인지, 예금주 특수문자예외처리 (예금주, 은행, 계좌번호, 기본계좌 설정 유무)
+    public PostCreateAccountRes createAccount(int userId, PostCreateAccountReq postCreateAccountReq) throws BaseException {
+        if (userDao.checkMaximumAccount(userId) == 1){
+            throw new BaseException(POST_ACCOUNT_MAXIMUM);
+        }
+        if (userDao.checkAccount(userId, postCreateAccountReq.getAccountNumber()) == 1){
+            throw new BaseException(POST_ACCOUNT_EXISTS);
+        }
+        if (!ValidationRegex.isRegexHolderName(postCreateAccountReq.getHolderName())) {
+            throw new BaseException(POST_ACCOUNT_HOLDER_NAME_REGEX);
+        }
+
+        try {
+
+            int createId = userDao.createAccount(userId, postCreateAccountReq);
+            if (createId == 0) {
+                throw new BaseException(POST_CREATE_ACCOUNT_FAIL);
+            }
+            if (postCreateAccountReq.isDefaultAccountCheck()){
+                int result = userDao.modifyDefaultAccount(userId, createId);
+                if (result == 0) {
+                    throw new BaseException(POST_CREATE_DEFAULT_ACCOUNT_FAIL);
+                }
+            }
+            return new PostCreateAccountRes(createId, "정상적으로 계좌 추가되었습니다.");
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 }

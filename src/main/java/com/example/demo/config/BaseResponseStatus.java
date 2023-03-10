@@ -51,6 +51,11 @@ public enum BaseResponseStatus {
     POST_REVIEW_EMPTY_CONTENT(false,2036,"리뷰 내용 입력칸이 비어있습니다."),
     POST_REVIEW_STAR_SIZE(false,2037,"별점은 0 이상 5 이하여야합니다."),
     POST_FOLLOW_EXISTS(false,2038,"이미 팔로우되어있습니다."),
+    POST_ACCOUNT_MAXIMUM(false,2039,"계좌는 최대 2개까지 등록 가능합니다."),
+    POST_ACCOUNT_EXISTS(false,2040,"이미 존재하는 계좌입니다."),
+    POST_ACCOUNT_HOLDER_NAME_REGEX(false,2041,"예금주명은 한글 영어만 가능합니다."),
+    POST_CREATE_ACCOUNT_FAIL(false,2042,"계좌 추가에 실패하였습니다."),
+    POST_CREATE_DEFAULT_ACCOUNT_FAIL(false,2043,"계좌 기본값 설정에 실패하였습니다."),
 
 
 
