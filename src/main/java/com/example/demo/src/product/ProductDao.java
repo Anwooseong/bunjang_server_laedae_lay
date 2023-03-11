@@ -4,6 +4,7 @@ import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.GetMainProductRes;
 import com.example.demo.src.product.model.GetSearchProductRes;
 import com.example.demo.src.product.model.GetSimilarProductRes;
+import com.example.demo.src.product.model.PostProductReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -97,5 +98,29 @@ public class ProductDao {
         String query="select exists(select * from MyProduct join Product P on MyProduct.product_id = P.id where P.id=? and user_id=? and MyProduct.status='A')";
         Object[] params = new Object[]{productId, userId};
         return this.jdbcTemplate.queryForObject(query, int.class, params);
+    }
+
+
+    public int createProduct(PostProductReq postProductReq) {
+        String createMyProductQuery = "insert into Product(seller_id, title, content, price, amount, is_new, is_safe_pay, has_delivery_fee, is_interchangable, location_address, major_category_id, middle_category_id, sub_category_id)\n" +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        Object[] createMyProductParams = new Object[]{postProductReq.getUserId(), postProductReq.getTitle(), postProductReq.getContent(), postProductReq.getPrice(), postProductReq.getAmount(), postProductReq.getCheckNewProduct(), postProductReq.getCheckPay(), postProductReq.getHasDeliveryFee(), postProductReq.getCheckExchange(), postProductReq.getRegion(), postProductReq.getMajorCategoryId(), postProductReq.getMiddleCategoryId(), postProductReq.getSubCategoryId()};
+        this.jdbcTemplate.update(createMyProductQuery, createMyProductParams);
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public void createProductImage(int lastInsertId, String image) {
+        String query = "insert into ProductImg(product_id, url)\n" +
+                "VALUES (?, ?)";
+        Object[] params = new Object[]{lastInsertId, image};
+        this.jdbcTemplate.update(query, params);
+
+    }
+
+    public void createProductTag(int lastInsertId, Integer tagId) {
+        String query = "insert into Product_Tag(product_id, tag_id) VALUES (?,?)";
+        Object[] params = new Object[]{lastInsertId, tagId};
+        this.jdbcTemplate.update(query,params);
     }
 }

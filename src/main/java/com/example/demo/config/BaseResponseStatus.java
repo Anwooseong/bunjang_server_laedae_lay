@@ -73,6 +73,9 @@ public enum BaseResponseStatus {
     GET_HISTORY_PARAMETER_TYPE(false,2058,"쿼리 파라미터에서 type은 sale(판매), purchase(구매) 중에 있어야합니다."),
     GET_HISTORY_PARAMETER_STATUS(false,2059,"쿼리 파라미터에서 status는 all(전체 상태), progress(진행중), complete(완료), cancel-refund(취소/환불) 중에 있어야합니다."),
     GET_HISTORY_PARAMETER_PAY(false,2060,"쿼리 파라미터에서 pay는 all(전체 거래), progress(번개 페이 안전결제) 중에 있어야합니다."),
+    GET_CHAT_PARAMETER(false,2061,"쿼리 파라미터에서 type은 all(전체 대화), sale(판매 대화), purchase(구매 대화) 중에 있어야합니다."),
+    POST_PRODUCT_IMAGE_FAIL(false,2062,"상품 이미지 등록에 실패하였습니다."),
+    POST_PRODUCT_TAG_FAIL(false,2063,"상품 태그 등록에 실패하였습니다."),
 
 
 
