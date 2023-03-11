@@ -1,11 +1,14 @@
 package com.example.demo.src.review;
 
+import com.example.demo.src.category.model.GetCategoryRes;
+import com.example.demo.src.review.model.GetReviewRes;
 import com.example.demo.src.review.model.PostReviewReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class ReviewDao {
@@ -30,5 +33,23 @@ public class ReviewDao {
 
         String lastInsertedQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertedQuery, int.class);
+    }
+
+    public List<GetReviewRes> getReviewsByUserId(int userId) {
+        String getReviewsByUserIdQuery = "select R.star_rating, R.content, U.name, R.created_at, R.product_id, P.title, P.is_safe_pay " +
+                "from Review R join User U on R.buyer_id = U.id " +
+                "join Product P on R.product_id = P.id " +
+                "where R.seller_id = ?";
+        String getReviewsByUserIdParam = String.valueOf(userId);
+        return this.jdbcTemplate.query(getReviewsByUserIdQuery,
+                (rs, rowNum) -> new GetReviewRes (
+                        rs.getInt("star_rating"),
+                        rs.getString("content"),
+                        rs.getString("name"),
+                        rs.getDate("created_at"),
+                        rs.getInt("product_id"),
+                        rs.getString("title"),
+                        rs.getString("is_safe_pay")
+                ), getReviewsByUserIdParam);
     }
 }
