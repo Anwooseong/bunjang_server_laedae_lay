@@ -14,3 +14,27 @@ spring:
     username: admin # 만약 따로 설정하지 않으셨다면 기본값은 admin 입니다
     password: a1234567 # 비밀번호를 입력해주세요!
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # file upload max size (파일 업로드 크기 설정)
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+
+# AWS S3 bucket Info (S3 버킷정보)
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA5LTBABEJSIJNKKIS
+      secret-key: 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
+
+    s3:
+      bucket: bungae-bucket
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+  
+
