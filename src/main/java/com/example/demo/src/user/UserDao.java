@@ -5,7 +5,6 @@ import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -185,5 +184,438 @@ public class UserDao {
     public int modifyLikeStatus(int userId, int myProductId) {
         String modifyLikeStatusQuery = "update MyProduct set status='D' where user_id=? and status='A' and id = ?";
         return this.jdbcTemplate.update(modifyLikeStatusQuery, userId, myProductId);
+    }
+
+    public List<GetCalculatesRes> getCalculates(int userId) {
+        String getCalculateQuery = "select  Payment.id, date_format(Payment.updated_at, '%Y.%m.%d') as date,\n" +
+                "        CASE\n" +
+                "            WHEN Payment.status = 'S'\n" +
+                "                THEN '지급완료'\n" +
+                "            END as status\n" +
+                "       , Payment.price from Payment join Product P on P.id = Payment.product_id where Payment.status ='S' and P.seller_id = ?";
+        return this.jdbcTemplate.query(getCalculateQuery,
+                (rs, rowNum) -> new GetCalculatesRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getInt(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistorySaleAll(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN Product.transaction_status = 'FORSALE'\n" +
+                "            THEN '진행중'\n" +
+                "            WHEN Product.transaction_status = 'R'\n" +
+                "            THEN '진행중'\n" +
+                "           WHEN Product.transaction_status ='SO'\n" +
+                "           THEN '완료'\n" +
+                "            WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where seller_id=?";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistorySaleAllPay(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN Product.transaction_status = 'FORSALE'\n" +
+                "            THEN '진행중'\n" +
+                "            WHEN Product.transaction_status = 'R'\n" +
+                "            THEN '진행중'\n" +
+                "           WHEN Product.transaction_status ='SO'\n" +
+                "           THEN '완료'\n" +
+                "            WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where seller_id=? and is_safe_pay='Y'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistorySaleProgressAll(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN Product.transaction_status = 'FORSALE'\n" +
+                "            THEN '진행중'\n" +
+                "            WHEN Product.transaction_status = 'R'\n" +
+                "            THEN '진행중'\n" +
+                "           WHEN Product.transaction_status ='SO'\n" +
+                "           THEN '완료'\n" +
+                "            WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where seller_id=? and (transaction_status='FORSALE' or transaction_status='R')";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistorySaleProgressPay(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN Product.transaction_status = 'FORSALE'\n" +
+                "            THEN '진행중'\n" +
+                "            WHEN Product.transaction_status = 'R'\n" +
+                "            THEN '진행중'\n" +
+                "           WHEN Product.transaction_status ='SO'\n" +
+                "           THEN '완료'\n" +
+                "            WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where seller_id=? and (transaction_status='FORSALE' or transaction_status='R') and is_safe_pay ='Y'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistorySaleCompleteAll(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN Product.transaction_status = 'FORSALE'\n" +
+                "            THEN '진행중'\n" +
+                "            WHEN Product.transaction_status = 'R'\n" +
+                "            THEN '진행중'\n" +
+                "           WHEN Product.transaction_status ='SO'\n" +
+                "           THEN '완료'\n" +
+                "            WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where seller_id=? and transaction_status='SO'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistorySaleCompletePay(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN Product.transaction_status = 'FORSALE'\n" +
+                "            THEN '진행중'\n" +
+                "            WHEN Product.transaction_status = 'R'\n" +
+                "            THEN '진행중'\n" +
+                "           WHEN Product.transaction_status ='SO'\n" +
+                "           THEN '완료'\n" +
+                "            WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where seller_id=? and transaction_status='SO' and is_safe_pay ='Y'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistorySaleCancelRefundAll(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN Product.transaction_status = 'FORSALE'\n" +
+                "            THEN '진행중'\n" +
+                "            WHEN Product.transaction_status = 'R'\n" +
+                "            THEN '진행중'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "           WHEN Product.transaction_status ='SO'\n" +
+                "           THEN '완료'\n" +
+                "\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where seller_id=? and (P.status='C' or P.status ='R')";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistorySaleCancelRefundPay(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN Product.transaction_status = 'FORSALE'\n" +
+                "            THEN '진행중'\n" +
+                "            WHEN Product.transaction_status = 'R'\n" +
+                "            THEN '진행중'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "           WHEN Product.transaction_status ='SO'\n" +
+                "           THEN '완료'\n" +
+                "\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where seller_id=? and (P.status='C' or P.status ='R') and is_safe_pay = 'Y'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistoryPurchaseAll(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN P.status = 'A'\n" +
+                "            THEN '완료'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "            ELSE '정산'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where buyer_id=?";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistoryPurchaseAllPay(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN P.status = 'A'\n" +
+                "            THEN '완료'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "            ELSE '정산'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where buyer_id=? and is_safe_pay='Y'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistoryPurchaseProgressAll(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN P.status = 'A'\n" +
+                "            THEN '완료'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "            ELSE '정산'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where buyer_id=? and P.status='progress'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistoryPurchaseProgressPay(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN P.status = 'A'\n" +
+                "            THEN '완료'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "            ELSE '정산'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where buyer_id=? and is_safe_pay='Y' and P.status='progress'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistoryPurchaseCompleteAll(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN P.status = 'A'\n" +
+                "            THEN '완료'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "            ELSE '정산'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where buyer_id=? and P.status='A'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistoryPurchaseCompletePay(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN P.status = 'A'\n" +
+                "            THEN '완료'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "            ELSE '정산'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where buyer_id=? and is_safe_pay='Y' and P.status='A'";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistoryPurchaseCancelRefundAll(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN P.status = 'A'\n" +
+                "            THEN '완료'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "            ELSE '정산'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where buyer_id=? and (P.status='C' or P.status='R')";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public List<GetHistoryRes> getHistoryPurchaseCancelRefundPay(int userId) {
+        String query = "select Product.id, Product.title,\n" +
+                "       CASE\n" +
+                "           WHEN P.status = 'A'\n" +
+                "            THEN '완료'\n" +
+                "           WHEN P.status = 'C'\n" +
+                "            THEN '취소'\n" +
+                "            WHEN P.status = 'R'\n" +
+                "            THEN '환불'\n" +
+                "            ELSE '정산'\n" +
+                "        END as status,\n" +
+                "        IF(is_safe_pay='Y', '번개페이 안전결제', '일반 결제') as pay\n" +
+                "       from Product\n" +
+                "    left join Payment P on Product.id = P.product_id where buyer_id=? and is_safe_pay='Y' and (P.status='C' or P.status='R')";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetHistoryRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                )
+                ,userId);
+    }
+
+    public String getImageUrl(int productId) {
+        String getImageUrlQuery = "select url from ProductImg join Product on Product.id = ProductImg.product_id where (ProductImg.id, ProductImg.product_id, ProductImg.url)\n" +
+                " in (select id, product_id, url from ProductImg where id in (select min(id) from ProductImg group by product_id)) and Product.id = ?";
+        return this.jdbcTemplate.queryForObject(getImageUrlQuery, String.class, productId);
     }
 }

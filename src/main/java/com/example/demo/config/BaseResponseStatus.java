@@ -70,6 +70,9 @@ public enum BaseResponseStatus {
     GET_DELIVERY_PARAMETER(false,2055,"쿼리 파라미터에서 status가 sell, receive, register 중에 있어야합니다."),
     POST_MY_PRODUCT_EXISTS(false,2056,"이미 찜 목록에 추가되어있는 상품입니다."),
     GET_SEARCH_PRODUCT_PARAMETER(false,2057,"쿼리 파라미터에서 order이 recent(최신순), price-asc(저가순), price-desc(고가순) 중에 있어야합니다."),
+    GET_HISTORY_PARAMETER_TYPE(false,2058,"쿼리 파라미터에서 type은 sale(판매), purchase(구매) 중에 있어야합니다."),
+    GET_HISTORY_PARAMETER_STATUS(false,2059,"쿼리 파라미터에서 status는 all(전체 상태), progress(진행중), complete(완료), cancel-refund(취소/환불) 중에 있어야합니다."),
+    GET_HISTORY_PARAMETER_PAY(false,2060,"쿼리 파라미터에서 pay는 all(전체 거래), progress(번개 페이 안전결제) 중에 있어야합니다."),
 
 
 
