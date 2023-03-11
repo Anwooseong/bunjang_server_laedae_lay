@@ -3,17 +3,13 @@ package com.example.demo.src.product;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.config.BaseResponseStatus;
-import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.GetMainProductRes;
 import com.example.demo.src.product.model.GetSearchProductRes;
-import com.example.demo.src.tag.model.GetTagRes;
+import com.example.demo.src.product.model.GetSimilarProductRes;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.ValidationRegex;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -59,6 +55,22 @@ public class ProductController {
 
             List<GetSearchProductRes> getSearchProductRes = productProvider.getSearchProduct(search, order);
             return new BaseResponse<>(getSearchProductRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 비슷한 상품 조회  API
+     * [GET] /app/products/{productId}/similar
+     * @return BaseResponse<List<GetSimilarProductRes>>
+     */
+    @GetMapping("/{productId}/similar")
+    public BaseResponse<List<GetSimilarProductRes>> getSimilarProduct(@PathVariable int productId){
+        try {
+            int userId = jwtService.getUserId();
+            List<GetSimilarProductRes> getSimilarProductRes = productProvider.getSimilarProduct(productId, userId);
+            return new BaseResponse<>(getSimilarProductRes);
         } catch (BaseException e) {
             return new BaseResponse<>((e.getStatus()));
         }

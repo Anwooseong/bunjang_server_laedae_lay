@@ -3,6 +3,7 @@ package com.example.demo.src.product;
 import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.GetMainProductRes;
 import com.example.demo.src.product.model.GetSearchProductRes;
+import com.example.demo.src.product.model.GetSimilarProductRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -74,5 +75,27 @@ public class ProductDao {
                         rs.getInt(3),
                         rs.getString(4)
                 ));
+    }
+
+    public List<GetSimilarProductRes> getSimilarProduct(int productId) {
+        String query = "select Product.id, Product.title, Product.price, \n" +
+                "       IF(Product.is_safe_pay='Y', true, false) as checkPay \n" +
+                "    from Product \n" +
+                "    where middle_category_id=(select middle_category_id from Product where id = ?) and id != ?";
+        Object[] params = new Object[]{productId, productId};
+        return this.jdbcTemplate.query(query,
+                (rs,rowNum)->new GetSimilarProductRes(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getInt(3),
+                        rs.getBoolean(4)
+                )
+                , params);
+    }
+
+    public int getMyProduct(int productId, int userId) {
+        String query="select exists(select * from MyProduct join Product P on MyProduct.product_id = P.id where P.id=? and user_id=? and MyProduct.status='A')";
+        Object[] params = new Object[]{productId, userId};
+        return this.jdbcTemplate.queryForObject(query, int.class, params);
     }
 }
