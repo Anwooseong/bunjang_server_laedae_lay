@@ -95,4 +95,116 @@ public class UserProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<GetCalculatesRes> getCalculates(int userId) throws BaseException{
+        try {
+            List<GetCalculatesRes> getCalculatesRes = userDao.getCalculates(userId);
+            return getCalculatesRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetHistoryRes> getHistory(int userId, String type, String status, String pay) throws BaseException{
+        if (!(type.equals("sale") || type.equals("purchase"))) {
+            throw new BaseException(GET_HISTORY_PARAMETER_TYPE);
+        }
+        if (!(status.equals("all") || status.equals("progress") || status.equals("complete") || status.equals("cancel-refund"))) {
+            throw new BaseException(GET_HISTORY_PARAMETER_STATUS);
+        }
+        if (!(pay.equals("all") || pay.equals("pay"))) {
+            throw new BaseException(GET_HISTORY_PARAMETER_PAY);
+        }
+        try {
+            List<GetHistoryRes> getHistoryRes;
+            if (type.equals("sale")){//판매
+                if (status.equals("all")){ //판매 -> 전체상태
+                    if (pay.equals("all")){//판매 -> 전체상태 -> 전체 거래
+                        getHistoryRes = userDao.getHistorySaleAll(userId);
+                    }else {
+                        //판매 -> 전체상태 -> 번개페이 안전결제
+                        getHistoryRes = userDao.getHistorySaleAllPay(userId);
+                    }
+
+                } else if (status.equals("progress")) { //판매 -> 진행중
+                    if (pay.equals("all")){//판매 -> 진행중 -> 전체 거래
+                        getHistoryRes = userDao.getHistorySaleProgressAll(userId);
+                    }else {
+                        //판매 -> 진행중 -> 번개페이 안전결제
+                        getHistoryRes = userDao.getHistorySaleProgressPay(userId);
+                    }
+
+                }else if (status.equals("complete")) { //판매 -> 완료
+                    if (pay.equals("all")){ //판매 -> 완료 -> 전체 거래
+                        getHistoryRes = userDao.getHistorySaleCompleteAll(userId);
+                    }else {
+                        //판매 -> 완료 -> 번개페이 안전결제
+                        getHistoryRes = userDao.getHistorySaleCompletePay(userId);
+                    }
+                }else { //판매 -> 취소/환불
+                    if (pay.equals("all")){ //판매 -> 취소/환불 -> 전체 거래
+                        getHistoryRes = userDao.getHistorySaleCancelRefundAll(userId);
+                    }else{
+                        //판매 -> 취소/환불 -> 번개페이 안전결제
+                        getHistoryRes = userDao.getHistorySaleCancelRefundPay(userId);
+                    }
+                }
+            }else{
+                //구매
+                if (status.equals("all")){ //구매
+                    if (pay.equals("all")){//구매 -> 전체상태 -> 전체 거래
+                        getHistoryRes = userDao.getHistoryPurchaseAll(userId);
+                    }else {
+                        //구매 -> 전체상태 -> 번개페이 안전결제
+                        getHistoryRes = userDao.getHistoryPurchaseAllPay(userId);
+                    }
+                } else if (status.equals("progress")) {
+                    if (pay.equals("all")){//구매 -> 진행중 -> 전체 거래
+                        getHistoryRes = userDao.getHistoryPurchaseProgressAll(userId);
+                    }else {
+                        //구매 -> 진행중 -> 번개페이 안전결제
+                        getHistoryRes = userDao.getHistoryPurchaseProgressPay(userId);
+                    }
+                }else if (status.equals("complete")) {
+                    if (pay.equals("all")){ //구매 -> 완료 -> 전체 거래
+                        getHistoryRes = userDao.getHistoryPurchaseCompleteAll(userId);
+                    }else {
+                        //구매 -> 완료 -> 번개페이 안전결제
+                        getHistoryRes = userDao.getHistoryPurchaseCompletePay(userId);
+                    }
+                }else {
+                    if (pay.equals("all")){ //구매 -> 취소/환불 -> 전체 거래
+                        getHistoryRes = userDao.getHistoryPurchaseCancelRefundAll(userId);
+                    }else{
+                        //구매 -> 취소/환불 -> 번개페이 안전결제
+                        getHistoryRes = userDao.getHistoryPurchaseCancelRefundPay(userId);
+                    }
+                }
+            }
+            for (GetHistoryRes getHistoryRe : getHistoryRes) {
+                String imageUrl = userDao.getImageUrl(getHistoryRe.getProductId());
+                getHistoryRe.setUrl(imageUrl);
+            }
+            return getHistoryRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -28,7 +28,7 @@ public class ProductController {
 
     /**
      * 상품 리스트 전체 조회  API
-     * [GET] /app/products
+     * [GET] /app/products/main
      * @return BaseResponse<GetMainProductRes>
      */
     @GetMapping("/main")

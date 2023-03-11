@@ -223,4 +223,61 @@ public class UserController {
         }
     }
 
+
+
+    /**
+     * 회원 구매 내역 조회 API
+     * [GET] /app/users/{userId}/payments?type=&status=&pay=
+     * @return BaseResponse<>
+     */
+    @GetMapping("/{userId}/payments")
+    public BaseResponse<List<GetHistoryRes>> getHistory(@PathVariable int userId,
+                                        @RequestParam(value = "type", defaultValue = "sale") String type,
+                                        @RequestParam(value = "status", defaultValue = "all") String status,
+                                        @RequestParam(value = "pay", defaultValue = "all") String pay) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            List<GetHistoryRes> getHistoryRes = userProvider.getHistory(userId, type, status, pay);
+            return new BaseResponse<>(getHistoryRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+
+
+
+    /**
+     * 회원 정산 내역 조회 API
+     * [GET] /app/users/{userId}/calculates
+     * @return BaseResponse<List<GetCalculatesRes>>
+     */
+    @GetMapping("/{userId}/calculates")
+    public BaseResponse<List<GetCalculatesRes>> getCalculates(@PathVariable int userId) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            List<GetCalculatesRes> getCalculatesRes = userProvider.getCalculates(userId);
+            return new BaseResponse<>(getCalculatesRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
