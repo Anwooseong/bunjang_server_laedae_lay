@@ -5,6 +5,7 @@ import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.GetMainProductRes;
 import com.example.demo.src.product.model.GetSearchProductRes;
+import com.example.demo.src.product.model.GetSimilarProductRes;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -82,6 +83,27 @@ public class ProductProvider {
                 getSearchProductRe.setUrl(imageUrl);
             }
             return getSearchProductRes;
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public List<GetSimilarProductRes> getSimilarProduct(int productId, int userId) throws BaseException{
+        try {
+            List<GetSimilarProductRes> getSimilarProductRes = productDao.getSimilarProduct(productId);
+            for (GetSimilarProductRes getSimilarProductRe : getSimilarProductRes) {
+                String imageUrl = productDao.getImageUrl(getSimilarProductRe.getProductId());
+                getSimilarProductRe.setImageUrl(imageUrl);
+            }
+            for (GetSimilarProductRes getSimilarProductRe : getSimilarProductRes) {
+                if (productDao.getMyProduct(productId, userId) == 1) {
+                    getSimilarProductRe.setCheckMyProduct(true);
+                }
+                else{
+                    getSimilarProductRe.setCheckMyProduct(false);
+                }
+            }
+            return getSimilarProductRes;
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
