@@ -46,7 +46,7 @@ public class ReviewDao {
                         rs.getInt("star_rating"),
                         rs.getString("content"),
                         rs.getString("name"),
-                        rs.getDate("created_at"),
+                        rs.getString("created_at"),
                         rs.getInt("product_id"),
                         rs.getString("title"),
                         rs.getString("is_safe_pay")
