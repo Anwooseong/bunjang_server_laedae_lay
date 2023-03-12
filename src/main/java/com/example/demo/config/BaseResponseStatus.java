@@ -76,6 +76,10 @@ public enum BaseResponseStatus {
     GET_CHAT_PARAMETER(false,2061,"쿼리 파라미터에서 type은 all(전체 대화), sale(판매 대화), purchase(구매 대화) 중에 있어야합니다."),
     POST_PRODUCT_IMAGE_FAIL(false,2062,"상품 이미지 등록에 실패하였습니다."),
     POST_PRODUCT_TAG_FAIL(false,2063,"상품 태그 등록에 실패하였습니다."),
+    POST_PRODUCT_IMAGE_SIZE(false,2064,"이미지는 최대 5개까지만 올릴 수 있습니다."),
+    POST_PRODUCT_AMOUNT_POSITIVE(false,2065,"상품 수량은 0보다 커야합니다."),
+    POST_PRODUCT_TAG_SIZE(false,2066,"태그는 최대 6개까지만 등록할 수 있습니다."),
+    POST_PRODUCT_IMAGE_UPLOAD(false,2067,"이미지 업로드에 실패하였습니다."),
 
 
 

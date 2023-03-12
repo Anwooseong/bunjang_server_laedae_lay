@@ -110,11 +110,11 @@ public class ProductDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
-    public void createProductImage(int lastInsertId, String image) {
+    public int createProductImage(int lastInsertId, String image) {
         String query = "insert into ProductImg(product_id, url)\n" +
                 "VALUES (?, ?)";
         Object[] params = new Object[]{lastInsertId, image};
-        this.jdbcTemplate.update(query, params);
+        return this.jdbcTemplate.update(query, params);
 
     }
 

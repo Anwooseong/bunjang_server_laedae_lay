@@ -26,6 +26,15 @@ public class ProductService {
 
 
     public PostProductRes createProduct(PostProductReq postProductReq, List<MultipartFile> images) throws BaseException {
+        if (images.size() > 5){
+            throw new BaseException(BaseResponseStatus.POST_PRODUCT_IMAGE_SIZE);
+        }
+        if (postProductReq.getAmount() < 1){
+            throw new BaseException(BaseResponseStatus.POST_PRODUCT_AMOUNT_POSITIVE);
+        }
+        if (postProductReq.getTagIds().size() > 6){
+            throw new BaseException(BaseResponseStatus.POST_PRODUCT_TAG_SIZE);
+        }
         try {
             int lastInsertId = productDao.createProduct(postProductReq);
             List<String> imageUrl = s3Uploader.uploadFile(images, "items/"+lastInsertId, lastInsertId);
@@ -33,7 +42,10 @@ public class ProductService {
             for (String image : imageUrl) {
                 if (image == null) break;
                 resultUrl.add(image);
-                productDao.createProductImage(lastInsertId, image);
+                int result = productDao.createProductImage(lastInsertId, image);
+                if (result == 0){
+                    throw new BaseException(BaseResponseStatus.POST_PRODUCT_IMAGE_UPLOAD);
+                }
             }
             for (Integer tagId : postProductReq.getTagIds()) {
                 productDao.createProductTag(lastInsertId, tagId);
