@@ -163,7 +163,7 @@ public class ProductDao {
         return this.jdbcTemplate.queryForObject(getLikesquery, int.class, getLikesParam);
     }
 
-    public GetProductDetailRes getProductInfo(int productId) throws BaseException {
+    public GetProductDetailRes getProductInfo(int productId) {
         String getProductInfoquery = "select price, is_safe_pay, Product.title, location_address, Product.created_at, view, has_delivery_fee, " +
                 "is_new, amount, is_interchangable, content, MC.img_url as 'category_img', MC.title as 'category_title', " +
                 "B.img_url as 'brand_img', name as 'brand_name' " +
@@ -192,5 +192,11 @@ public class ProductDao {
                         rs.getString("brand_name")
                 ),
                 getProductInfoParam);
+    }
+
+    public int isProductExisted(int productId) {
+        String isProductExistedQuery = "select exists(select * from Product where id = ?)";
+        int isProductExistedParam = productId;
+        return this.jdbcTemplate.queryForObject(isProductExistedQuery, int.class, isProductExistedParam);
     }
 }

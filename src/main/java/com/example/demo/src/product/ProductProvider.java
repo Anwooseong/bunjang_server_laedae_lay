@@ -112,6 +112,9 @@ public class ProductProvider {
 
     public GetProductDetailRes getProductDetail(int productId) throws BaseException {
         try {
+            if(productDao.isProductExisted(productId) == 0) {
+                throw new BaseException(BaseResponseStatus.GET_PRODUCT_NOT_EXISTED);
+            }
             GetProductDetailRes getProductDetailRes = productDao.getProductInfo(productId);
             List<String> productImgs = productDao.getProductImgUrls(productId);
             if(productImgs == null) {
@@ -132,7 +135,9 @@ public class ProductProvider {
             getProductDetailRes.setChatCounts(productDao.getChatCounts(productId));
             getProductDetailRes.setLikes(productDao.getLikes(productId));
             return getProductDetailRes;
-        } catch (Exception e) {
+        } catch(BaseException be) {
+            throw new BaseException(be.getStatus());
+        }catch (Exception e) {
             System.out.println(e.getMessage());
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
