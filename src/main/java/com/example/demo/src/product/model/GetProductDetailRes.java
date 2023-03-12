@@ -19,9 +19,9 @@ public class GetProductDetailRes {
    private String title;
    private String locationAddress;
    private String createdAt;
-   private int view;
-   private int likes;
-   private int chatCounts;
+   private int view = 0;
+   private int likes = 0;
+   private int chatCounts = 0;
    private String hasDeliveryFee;
    private String isNew;
    private int amount;

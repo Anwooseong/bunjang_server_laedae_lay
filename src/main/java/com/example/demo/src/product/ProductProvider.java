@@ -113,12 +113,27 @@ public class ProductProvider {
     public GetProductDetailRes getProductDetail(int productId) throws BaseException {
         try {
             GetProductDetailRes getProductDetailRes = productDao.getProductInfo(productId);
-            getProductDetailRes.setProductImgUrl(productDao.getProductImgUrls(productId));
-            getProductDetailRes.setTags(productDao.getTags(productId));
+            List<String> productImgs = productDao.getProductImgUrls(productId);
+            if(productImgs == null) {
+                getProductDetailRes.setProductImgUrl(null);
+            }
+            else {
+                getProductDetailRes.setProductImgUrl(productImgs);
+            }
+
+            List<String> tags = productDao.getTags(productId);
+            if(tags == null) {
+                getProductDetailRes.setProductImgUrl(null);
+            }
+            else {
+                getProductDetailRes.setProductImgUrl(tags);
+            }
+
             getProductDetailRes.setChatCounts(productDao.getChatCounts(productId));
             getProductDetailRes.setLikes(productDao.getLikes(productId));
             return getProductDetailRes;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }

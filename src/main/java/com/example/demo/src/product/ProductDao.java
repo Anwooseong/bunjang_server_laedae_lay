@@ -1,13 +1,17 @@
 package com.example.demo.src.product;
 
+import com.example.demo.config.BaseException;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.*;
 import com.example.demo.src.user.model.User;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -144,7 +148,7 @@ public class ProductDao {
     }
 
     public int getChatCounts(int productId) {
-        String getChatCountsquery = "select count(*) as \"chat_count\" " +
+        String getChatCountsquery = "select count(*) as 'chat_count' " +
                 "from Product join ChatRoom CR on Product.id = CR.product_id " +
                 "where product_id = ?";
         String getChatCountsParam = String.valueOf(productId);
@@ -152,17 +156,17 @@ public class ProductDao {
     }
 
     public int getLikes(int productId) {
-        String getLikesquery = "select count(*) as \"likes\" " +
+        String getLikesquery = "select count(*) as 'likes' " +
                 "from Product join MyProduct MP on Product.id = MP.product_id " +
                 "where product_id = ?";
         String getLikesParam = String.valueOf(productId);
         return this.jdbcTemplate.queryForObject(getLikesquery, int.class, getLikesParam);
     }
 
-    public GetProductDetailRes getProductInfo(int productId) {
+    public GetProductDetailRes getProductInfo(int productId) throws BaseException {
         String getProductInfoquery = "select price, is_safe_pay, Product.title, location_address, Product.created_at, view, has_delivery_fee, " +
-                "is_new, amount, is_interchangable, content, MC.img_url as \"category_img\", MC.title as \"category_title\", " +
-                "B.img_url as \"brand_img\", name as \"brand_name\" " +
+                "is_new, amount, is_interchangable, content, MC.img_url as 'category_img', MC.title as 'category_title', " +
+                "B.img_url as 'brand_img', name as 'brand_name' " +
                 "from Product " +
                 "left join MajorCategory MC on Product.major_category_id = MC.id " +
                 "left join Brand B on Product.brand_id = B.id " +
