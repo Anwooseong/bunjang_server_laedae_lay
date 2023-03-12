@@ -16,7 +16,7 @@ public class GetReviewRes {
     private int startRating;
     private String content;
     private String userName;
-    private Date createdAt;
+    private String createdAt;
     private int productId;
     private String productTitle;
     private String isSafePay;

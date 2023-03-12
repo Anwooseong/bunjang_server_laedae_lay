@@ -4,6 +4,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.GetMainProductRes;
+import com.example.demo.src.product.model.GetProductDetailRes;
 import com.example.demo.src.product.model.GetSearchProductRes;
 import com.example.demo.src.product.model.GetSimilarProductRes;
 import com.example.demo.utils.JwtService;
@@ -108,4 +109,18 @@ public class ProductProvider {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
+    public GetProductDetailRes getProductDetail(int productId) throws BaseException {
+        try {
+            GetProductDetailRes getProductDetailRes = productDao.getProductInfo(productId);
+            getProductDetailRes.setProductImgUrl(productDao.getProductImgUrls(productId));
+            getProductDetailRes.setTags(productDao.getTags(productId));
+            getProductDetailRes.setChatCounts(productDao.getChatCounts(productId));
+            getProductDetailRes.setLikes(productDao.getLikes(productId));
+            return getProductDetailRes;
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
 }

@@ -98,4 +98,21 @@ public class ProductController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
+    /**
+     * 상품 정보 조회  API
+     * [GET] /app/products/{productId}
+     *
+     * @return BaseResponse<GetProductDetailRes>
+     */
+    @GetMapping("/{productId}")
+    public BaseResponse<GetProductDetailRes> getProductDetail(@PathVariable int productId) {
+        try {
+            jwtService.validateTokenExpired();
+            GetProductDetailRes getProductDetailRes = productProvider.getProductDetail(productId);
+            return new BaseResponse<>(getProductDetailRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
 }
