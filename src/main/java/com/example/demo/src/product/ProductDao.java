@@ -139,7 +139,7 @@ public class ProductDao {
                 "where product_id = ?";
         String getTagsParam = String.valueOf(productId);
         return this.jdbcTemplate.query(getTagssquery,
-                (rs,rowNum)-> rs.getString("url")
+                (rs,rowNum)-> rs.getString("name")
                 , getTagsParam);
     }
 
@@ -164,8 +164,8 @@ public class ProductDao {
                 "is_new, amount, is_interchangable, content, MC.img_url as \"category_img\", MC.title as \"category_title\", " +
                 "B.img_url as \"brand_img\", name as \"brand_name\" " +
                 "from Product " +
-                "join MajorCategory MC on Product.major_category_id = MC.id " +
-                "join Brand B on Product.brand_id = B.id " +
+                "left join MajorCategory MC on Product.major_category_id = MC.id " +
+                "left join Brand B on Product.brand_id = B.id " +
                 "where Product.id = ?";
         String getProductInfoParam = String.valueOf(productId);
 
