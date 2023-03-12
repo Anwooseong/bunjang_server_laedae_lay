@@ -80,6 +80,7 @@ public enum BaseResponseStatus {
     POST_PRODUCT_AMOUNT_POSITIVE(false,2065,"상품 수량은 0보다 커야합니다."),
     POST_PRODUCT_TAG_SIZE(false,2066,"태그는 최대 6개까지만 등록할 수 있습니다."),
     POST_PRODUCT_IMAGE_UPLOAD(false,2067,"이미지 업로드에 실패하였습니다."),
+    GET_PRODUCT_NOT_EXISTED(false, 2068, "존재하지 않는 상품 ID입니다."),
 
 
 
