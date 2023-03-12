@@ -84,13 +84,14 @@ public class ProductController {
     /**
      * 판매 상품 등록  API
      * [POST] /app/products
-     *
-     * @return BaseResponse<String>
+     * @return BaseResponse<PostProductRes>
      */
     @PostMapping(consumes = {"multipart/form-data"})
     public BaseResponse<PostProductRes> createProduct(@RequestPart(value = "file") List<MultipartFile> images,
                                                       @RequestPart(value = "postProductReq") PostProductReq postProductReq) {
         try {
+            int userId = jwtService.getUserId();
+            jwtService.validateUserByJwt(userId, postProductReq.getUserId());
             PostProductRes postProductRes = productService.createProduct(postProductReq, images);
             return new BaseResponse<>(postProductRes);
         } catch (BaseException e) {
