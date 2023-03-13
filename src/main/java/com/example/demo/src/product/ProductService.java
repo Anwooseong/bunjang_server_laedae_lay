@@ -14,6 +14,9 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.MODIFY_PRODUCT_STATUS_FAIL;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -53,6 +56,30 @@ public class ProductService {
             return new PostProductRes(lastInsertId, resultUrl);
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public String modifyProductStatus(int productId, String status) throws BaseException {
+        try {
+            switch (status) {
+                case "sold-out":
+                    status = "SO";
+                    break;
+                case "for-sale":
+                    status = "FS";
+                    break;
+                case "reserved":
+                    status = "R";
+                    break;
+            }
+
+            int result = productDao.modifyProductStatus(productId, status);
+            if(result == 0) {
+                throw new BaseException(MODIFY_PRODUCT_STATUS_FAIL);
+            }
+            return "상품 상태 변경에 성공하였습니다.";
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 }

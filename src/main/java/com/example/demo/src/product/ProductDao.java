@@ -199,4 +199,10 @@ public class ProductDao {
         int isProductExistedParam = productId;
         return this.jdbcTemplate.queryForObject(isProductExistedQuery, int.class, isProductExistedParam);
     }
+
+    public int modifyProductStatus(int productid, String status) {
+        String modifyProductStatusQuery = "update Product set transaction_status=? where id=?";
+        Object[] modifyProductStatusParams = new Object[]{ status, productid };
+        return this.jdbcTemplate.update(modifyProductStatusQuery, modifyProductStatusParams);
+    }
 }

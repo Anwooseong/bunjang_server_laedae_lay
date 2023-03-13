@@ -82,7 +82,8 @@ public enum BaseResponseStatus {
     POST_PRODUCT_TAG_SIZE(false,2066,"태그는 최대 6개까지만 등록할 수 있습니다."),
     POST_PRODUCT_IMAGE_UPLOAD(false,2067,"이미지 업로드에 실패하였습니다."),
     GET_PRODUCT_NOT_EXISTED(false, 2068, "존재하지 않는 상품 ID입니다."),
-
+    PATCH_PRODUCT_STATUS_INVALID_OR_EMPTY_PARAMETER(false, 2069, "쿼리 스트링 값이 없거나 부적절한 값 입니다. for-sale, reserved, sold-out 중 하나의 값을 가져야 합니다."),
+    MODIFY_PRODUCT_STATUS_FAIL(false, 2070, "상품 상태 수정에 실패하였습니다."),
 
 
     /**

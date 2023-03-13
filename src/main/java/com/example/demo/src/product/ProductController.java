@@ -15,6 +15,8 @@ import sun.net.www.protocol.http.AuthenticatorKeys;
 
 import java.util.List;
 
+import static com.example.demo.config.BaseResponseStatus.PATCH_PRODUCT_STATUS_INVALID_OR_EMPTY_PARAMETER;
+
 @RestController
 @RequestMapping("/app/products")
 @RequiredArgsConstructor
@@ -112,6 +114,29 @@ public class ProductController {
             GetProductDetailRes getProductDetailRes = productProvider.getProductDetail(productId);
             return new BaseResponse<>(getProductDetailRes);
         } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 내 상품 정보 상태 변경 API
+     * [PATCH] /app/products/:productId?status=
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/{productId}")
+    public BaseResponse<String> modifyProductStatus(@PathVariable("productId") int productid, @RequestParam(value = "status", required = true) String status){
+        try {
+            if(status.equals("for-sale") || status.equals("reserved") || status.equals("sold-out")) {
+                int userIdByJwt = jwtService.getUserId();
+                jwtService.validateTokenExpired();
+
+                String patchProductStatusRes = productService.modifyProductStatus(productid, status);
+                return new BaseResponse<>(patchProductStatusRes);
+            }
+            else {
+                throw new BaseException(PATCH_PRODUCT_STATUS_INVALID_OR_EMPTY_PARAMETER);
+            }
+        }catch (BaseException e){
             return new BaseResponse<>((e.getStatus()));
         }
     }
