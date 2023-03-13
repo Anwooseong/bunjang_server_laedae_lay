@@ -685,7 +685,7 @@ public class UserDao {
     }
 
     public String getIsFollow(int userId, int storeId) {
-        String getIsFollowQuery = "select exists(select * from Follow where follower_id = ? and following_id = ?) as 'is_follow'";
+        String getIsFollowQuery = "select if(exists(select * from Follow where follower_id = ? and following_id = ?) > 0, 'Y', 'N') as 'is_follow'";
         Object[] getIsFollowParams = new Object[]{ userId, storeId };   // 내 아이디, 상점 아이디 순서대로
 
         return this.jdbcTemplate.queryForObject(getIsFollowQuery,
