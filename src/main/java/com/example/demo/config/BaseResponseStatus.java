@@ -25,6 +25,7 @@ public enum BaseResponseStatus {
 
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
+    USERS_NOT_EXISTED(false, 2011, "존재하지 않는 유저입니다."),
 
     // [POST] /users/create
     POST_USERS_EMPTY_STORE_NAME(false, 2015, "상점명 입력칸이 비어 있습니다."),
