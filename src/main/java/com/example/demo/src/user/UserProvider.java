@@ -190,6 +190,29 @@ public class UserProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public GetStoreDetailRes getStoreDetails(int userId, int userIdByJwt) throws BaseException {
+        try {
+            if(userDao.checkUserExisted(userId) == 0) {
+                throw new BaseException(USERS_NOT_EXISTED);
+            }
+            GetStoreDetailRes getStoreDetailRes = userDao.getStoreDetails(userId);
+
+            getStoreDetailRes.setStarRating(userDao.getStarRating(userId));
+            getStoreDetailRes.setTransactionCount(userDao.getTransactionCount(userId));
+            getStoreDetailRes.setFollower(userDao.getFollower(userId));
+            getStoreDetailRes.setFollowing(userDao.getFollowing(userId));
+            getStoreDetailRes.setSafePayCount(userDao.getSafePayCount(userId));
+            getStoreDetailRes.setPoint(userDao.getPoint(userId));
+            getStoreDetailRes.setIsFollow(userDao.getIsFollow(userIdByJwt, userId));
+
+            return getStoreDetailRes;
+        } catch(BaseException be) {
+            throw new BaseException(be.getStatus());
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
 
 
