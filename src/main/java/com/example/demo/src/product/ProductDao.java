@@ -32,18 +32,19 @@ public class ProductDao {
     }
 
     public List<MainProductDto> getMainProduct(String major, String middle) {
-        String getMainProductQuery = "select Product.id as id, CONCAT(MC.title, ' > ',M.title) as category, Product.title as title, price, is_safe_pay, is_safe_care from Product\n" +
+        String getMainProductQuery = "select Product.id as id, Product.seller_id as userId, CONCAT(MC.title, ' > ',M.title) as category, Product.title as title, price, is_safe_pay, is_safe_care from Product\n" +
                 " join MajorCategory MC on Product.major_category_id = MC.id\n" +
                 " join MiddleCategory M on Product.middle_category_id = M.id where (MC.title, M.title) IN ((?, ?)) order by M.updated_at desc;";
         Object[] getMainProductParams = new Object[]{major, middle};
         return this.jdbcTemplate.query(getMainProductQuery,
                 (rs, rowNum) -> new MainProductDto(
                         rs.getInt(1),
-                        rs.getString(2),
+                        rs.getInt(2),
                         rs.getString(3),
-                        rs.getInt(4),
-                        rs.getBoolean(5),
-                        rs.getBoolean(6)
+                        rs.getString(4),
+                        rs.getInt(5),
+                        rs.getBoolean(6),
+                        rs.getBoolean(7)
                 )
                 , getMainProductParams);
     }

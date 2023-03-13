@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MainProductDto {
     private int id;
+    private int userId;
     private String categoryTitle;
     private String title;
     private String url;
@@ -16,8 +17,9 @@ public class MainProductDto {
     private boolean isSafePay;
     private boolean isSafeCare;
 
-    public MainProductDto(int id, String categoryTitle, String title, int price, boolean isSafePay, boolean isSafeCare) {
+    public MainProductDto(int id, int userId, String categoryTitle, String title, int price, boolean isSafePay, boolean isSafeCare) {
         this.id = id;
+        this.userId = userId;
         this.categoryTitle = categoryTitle;
         this.title = title;
         this.price = price;
