@@ -291,6 +291,26 @@ public class UserController {
         }
     }
 
+    /**
+     * 상점 정보 조회 API
+     * [GET] /app/users/{userId}
+     * @return BaseResponse<GetStoreDetailRes>
+     */
+    @GetMapping("/{userId}")
+    public BaseResponse<GetStoreRes> getStore(@PathVariable int userId) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+
+            GetStoreRes getStoreRes = userProvider.getStore(userId, userIdByJwt);
+
+            if(userId == userIdByJwt) {
+                getStoreRes.setIsFollow("Y");
+            }
+            return new BaseResponse<>(getStoreRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
 }
 
 

@@ -619,14 +619,14 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(getImageUrlQuery, String.class, productId);
     }
 
-    public int getStarRating(int userId) {
+    public Double getStarRating(int userId) {
         String getStarRatingQuery = "select ifnull(ROUND(AVG(star_rating), 1), 0) as 'starRating' " +
                 "from Review R " +
                 "where seller_id = ?";
         int getStarRatingParam = userId;
 
         return this.jdbcTemplate.queryForObject(getStarRatingQuery,
-                int.class
+                Double.class
                 ,getStarRatingParam);
     }
 
@@ -718,5 +718,20 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(checkUserExistedQuery,
                 int.class
                 ,checkUserExistedParam);
+    }
+
+    public GetStoreRes getStore(int userId) {
+        String getStoreDetailResQuery = "select profile_url, name, IF((exists(select phone_number from User) > 0), 'Y', 'N') as 'is_authenticated' " +
+                "from User " +
+                "where id = ?";
+        int getStoreDetailResParam = userId;
+
+        return this.jdbcTemplate.queryForObject(getStoreDetailResQuery,
+                (rs, rowNum) -> new GetStoreRes(
+                        rs.getString("profile_url"),
+                        rs.getString("name"),
+                        rs.getString("is_authenticated")
+                )
+                ,getStoreDetailResParam);
     }
 }
