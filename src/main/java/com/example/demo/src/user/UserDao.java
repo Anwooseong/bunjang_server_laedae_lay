@@ -618,4 +618,105 @@ public class UserDao {
                 " in (select id, product_id, url from ProductImg where id in (select min(id) from ProductImg group by product_id)) and Product.id = ?";
         return this.jdbcTemplate.queryForObject(getImageUrlQuery, String.class, productId);
     }
+
+    public int getStarRating(int userId) {
+        String getStarRatingQuery = "select ifnull(ROUND(AVG(star_rating), 1), 0) as 'starRating' " +
+                "from Review R " +
+                "where seller_id = ?";
+        int getStarRatingParam = userId;
+
+        return this.jdbcTemplate.queryForObject(getStarRatingQuery,
+                int.class
+                ,getStarRatingParam);
+    }
+
+    public int getTransactionCount(int userId) {
+        String getTransactionCountQuery = "select count(*) as 'transaction_count' " +
+                "from Product PR join Payment P on PR.id = P.product_id " +
+                "where seller_id = ? or buyer_id = ?";
+        Object[] getTransactionCountParams = new Object[]{ userId, userId };
+
+        return this.jdbcTemplate.queryForObject(getTransactionCountQuery,
+                int.class
+                ,getTransactionCountParams);
+    }
+
+    public int getFollower(int userId) {
+        String getFollowerQuery = "select count(*) as 'follower' " +
+                "from Follow " +
+                "where follower_id = ?";
+        int getFollowerParam = userId;
+
+        return this.jdbcTemplate.queryForObject(getFollowerQuery,
+                int.class
+                ,getFollowerParam);
+    }
+
+    public int getFollowing(int userId) {
+        String getFollowingQuery = "select count(*) as 'following' " +
+                "from Follow " +
+                "where following_id = ?";
+        int getFollowingParam = userId;
+
+        return this.jdbcTemplate.queryForObject(getFollowingQuery,
+                int.class
+                ,getFollowingParam);
+    }
+
+    public int getSafePayCount(int userId) {
+        String getSafePayCountQuery = "select count(*) as 'safe_pay_count' " +
+                "from Product " +
+                "where seller_id = ? and is_safe_pay = 'Y'";
+        int getSafePayCountParam = userId;
+
+        return this.jdbcTemplate.queryForObject(getSafePayCountQuery,
+                int.class
+                ,getSafePayCountParam);
+    }
+
+    public int getPoint(int userId) {
+        String getPointQuery = "select ifnull(sum(point), 0) as point " +
+                "from BungaePoint where user_id = ?";
+        int getPointParam = userId;
+
+        return this.jdbcTemplate.queryForObject(getPointQuery,
+                int.class
+                ,getPointParam);
+    }
+
+    public String getIsFollow(int userId, int storeId) {
+        String getIsFollowQuery = "select exists(select * from Follow where follower_id = ? and following_id = ?) as 'is_follow'";
+        Object[] getIsFollowParams = new Object[]{ userId, storeId };   // 내 아이디, 상점 아이디 순서대로
+
+        return this.jdbcTemplate.queryForObject(getIsFollowQuery,
+                String.class
+                ,getIsFollowParams);
+    }
+
+    public GetStoreDetailRes getStoreDetails(int userId) {
+        String getStoreDetailResQuery = "select profile_url, name, last_access_date, TIMESTAMPDIFF(DAY, created_at, curdate()) as 'open_date', " +
+                "IF((exists(select phone_number from User) > 0), 'Y', 'N') as 'is_authenticated', store_introduction " +
+                "from User where id = ?";
+        int getStoreDetailResParam = userId;
+
+        return this.jdbcTemplate.queryForObject(getStoreDetailResQuery,
+                (rs, rowNum) -> new GetStoreDetailRes(
+                        rs.getString("profile_url"),
+                        rs.getString("name"),
+                        rs.getString("last_access_date"),
+                        rs.getInt("open_date"),
+                        rs.getString("is_authenticated"),
+                        rs.getString("store_introduction")
+                )
+                ,getStoreDetailResParam);
+    }
+
+    public int checkUserExisted(int userId) {
+        String checkUserExistedQuery = "select exists(select * from User where id = ?)";
+        int checkUserExistedParam = userId;
+
+        return this.jdbcTemplate.queryForObject(checkUserExistedQuery,
+                int.class
+                ,checkUserExistedParam);
+    }
 }
