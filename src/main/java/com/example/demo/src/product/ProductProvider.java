@@ -115,23 +115,10 @@ public class ProductProvider {
             if(productDao.isProductExisted(productId) == 0) {
                 throw new BaseException(BaseResponseStatus.GET_PRODUCT_NOT_EXISTED);
             }
+
             GetProductDetailRes getProductDetailRes = productDao.getProductInfo(productId);
-            List<String> productImgs = productDao.getProductImgUrls(productId);
-            if(productImgs == null) {
-                getProductDetailRes.setProductImgUrl(null);
-            }
-            else {
-                getProductDetailRes.setProductImgUrl(productImgs);
-            }
-
-            List<String> tags = productDao.getTags(productId);
-            if(tags == null) {
-                getProductDetailRes.setProductImgUrl(null);
-            }
-            else {
-                getProductDetailRes.setProductImgUrl(tags);
-            }
-
+            getProductDetailRes.setProductImgUrl(productDao.getProductImgUrls(productId));
+            getProductDetailRes.setTags(productDao.getTags(productId));
             getProductDetailRes.setChatCounts(productDao.getChatCounts(productId));
             getProductDetailRes.setLikes(productDao.getLikes(productId));
             return getProductDetailRes;
