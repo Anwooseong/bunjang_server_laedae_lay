@@ -32,7 +32,7 @@ public class UserController {
      * [POST] /app/users/create
      * BaseResponse<PostUserRes>
      */
-    @PostMapping("/create")
+    @PostMapping("")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
         if (postUserReq.getPhoneNumber().length() < 4){
             return new BaseResponse<>(POST_USERS_COUNT_PHONE); // 2024, "휴대폰 전화번호 4자리 이상 적어주세요."

@@ -15,7 +15,7 @@ import sun.net.www.protocol.http.AuthenticatorKeys;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.PATCH_PRODUCT_STATUS_INVALID_OR_EMPTY_PARAMETER;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/app/products")
@@ -51,9 +51,12 @@ public class ProductController {
      * @return BaseResponse<List < GetSearchProductRes>>
      */
     @GetMapping("")
-    public BaseResponse<List<GetSearchProductRes>> getSearchProduct(@RequestParam(value = "query", defaultValue = "") String search, @RequestParam(value = "order", defaultValue = "recent") String order) {
-        if (!ValidationRegex.isRegexSearch(search)) {
-            return new BaseResponse<>(BaseResponseStatus.GET_SEARCH_REGEX);
+    public BaseResponse<List<GetSearchProductRes>> getSearchProduct(@RequestParam(value = "query", required = false) String search, @RequestParam(value = "order", required = false) String order) {
+        if (search == null) {
+            return new BaseResponse<>(GET_PRODUCT_QUERY_PARAMETER);
+        }
+        if (order == null) {
+            return new BaseResponse<>(GET_PRODUCT_ORDER_PARAMETER);
         }
         try {
             int userId = jwtService.getUserId();

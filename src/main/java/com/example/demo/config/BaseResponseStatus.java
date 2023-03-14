@@ -84,6 +84,9 @@ public enum BaseResponseStatus {
     GET_PRODUCT_NOT_EXISTED(false, 2068, "존재하지 않는 상품 ID입니다."),
     PATCH_PRODUCT_STATUS_INVALID_OR_EMPTY_PARAMETER(false, 2069, "쿼리 스트링 값이 없거나 부적절한 값 입니다. for-sale, reserved, sold-out 중 하나의 값을 가져야 합니다."),
     MODIFY_PRODUCT_STATUS_FAIL(false, 2070, "상품 상태 수정에 실패하였습니다."),
+    GET_TAG_QUERY_PARAMETER(false, 2071, "쿼리 파라미터에 query부분이 null로 들어왔습니다."),
+    GET_PRODUCT_QUERY_PARAMETER(false, 2072, "쿼리 파라미터에 query부분이 null로 들어왔습니다."),
+    GET_PRODUCT_ORDER_PARAMETER(false, 2073, "쿼리 파라미터에 order부분이 null로 들어왔습니다."),
 
 
     /**

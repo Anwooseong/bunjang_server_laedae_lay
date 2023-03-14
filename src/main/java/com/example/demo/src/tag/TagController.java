@@ -29,10 +29,11 @@ public class TagController {
      * @return BaseResponse<List<GetTagRes>>
      */
     @GetMapping("")
-    public BaseResponse<List<GetTagRes>> searchTags(@RequestParam("query") String search){
-        if (!ValidationRegex.isRegexSearch(search)) {
-            return new BaseResponse<>(BaseResponseStatus.GET_SEARCH_REGEX);
+    public BaseResponse<List<GetTagRes>> searchTags(@RequestParam(value = "query", required = false) String search){
+        if (search == null){
+            return new BaseResponse<>(BaseResponseStatus.GET_TAG_QUERY_PARAMETER);
         }
+
         try {
             int userId = jwtService.getUserId();
             tagProvider.getValidUser(userId);
