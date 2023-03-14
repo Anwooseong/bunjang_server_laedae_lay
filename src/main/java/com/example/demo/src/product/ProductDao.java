@@ -165,7 +165,10 @@ public class ProductDao {
     }
 
     public GetProductDetailRes getProductInfo(int productId) {
-        String getProductInfoquery = "select price, is_safe_pay, Product.title, location_address, Product.created_at, view, has_delivery_fee, " +
+        String getProductInfoquery = "select price, is_safe_pay, Product.title, location_address, " +
+                "TIMESTAMPDIFF(DAY, Product.created_at, curdate()) 'day_created_from', " +
+                "SUM(GREATEST((TIMESTAMPDIFF(HOUR, Product.created_at, curdate()) - 24 * TIMESTAMPDIFF(DAY, Product.created_at, curdate())), 0)) as 'hour_created_from', " +
+                "Product.created_at, view, has_delivery_fee, " +
                 "is_new, amount, is_interchangable, content, MC.img_url as 'category_img', MC.title as 'category_title', " +
                 "B.img_url as 'brand_img', name as 'brand_name' " +
                 "from Product " +
@@ -180,6 +183,8 @@ public class ProductDao {
                         rs.getString("is_safe_pay"),
                         rs.getString("title"),
                         rs.getString("location_address"),
+                        rs.getString("day_created_from"),
+                        rs.getString("hour_created_from"),
                         rs.getString("created_at"),
                         rs.getInt("view"),
                         rs.getString("has_delivery_fee"),
