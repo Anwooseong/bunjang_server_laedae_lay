@@ -40,14 +40,34 @@ public class ProductProvider {
             }
 
             List<MainProductDto> manPadding = getMainProductDtos("남성의류", "패딩/점퍼");
+            getCheckMyProduct(userId, manPadding);
+
             List<MainProductDto> womenPadding = getMainProductDtos("여성의류", "패딩/점퍼");
+            getCheckMyProduct(userId, womenPadding);
+
             List<MainProductDto> manShoes = getMainProductDtos("신발", "남성화");
+            getCheckMyProduct(userId, manShoes);
+
             List<MainProductDto> womenShoes = getMainProductDtos("신발", "여성화");
+            getCheckMyProduct(userId, womenShoes);
+
             List<MainProductDto> sneakers = getMainProductDtos("신발", "스니커즈");
+            getCheckMyProduct(userId, sneakers);
+
             GetMainProductRes getMainProductRes = new GetMainProductRes(manPadding, womenPadding, manShoes, womenShoes, sneakers);
             return getMainProductRes;
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    private void getCheckMyProduct(int userId, List<MainProductDto> categories) {
+        for (MainProductDto category : categories) {
+            if (productDao.getMyProduct( category.getId(), userId) == 1){
+                category.setCheckMyProduct(true);
+            }else{
+                category.setCheckMyProduct(false);
+            }
         }
     }
 

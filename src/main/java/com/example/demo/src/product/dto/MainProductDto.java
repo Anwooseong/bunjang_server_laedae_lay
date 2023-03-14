@@ -16,6 +16,7 @@ public class MainProductDto {
     private int price;
     private boolean isSafePay;
     private boolean isSafeCare;
+    private boolean checkMyProduct;
 
     public MainProductDto(int id, int userId, String categoryTitle, String title, int price, boolean isSafePay, boolean isSafeCare) {
         this.id = id;
