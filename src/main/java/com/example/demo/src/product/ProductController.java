@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.net.www.protocol.http.AuthenticatorKeys;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -130,7 +132,6 @@ public class ProductController {
     public BaseResponse<String> modifyProductStatus(@PathVariable("productId") int productid, @RequestParam(value = "status", required = true) String status){
         try {
             if(status.equals("for-sale") || status.equals("reserved") || status.equals("sold-out")) {
-                int userIdByJwt = jwtService.getUserId();
                 jwtService.validateTokenExpired();
 
                 String patchProductStatusRes = productService.modifyProductStatus(productid, status);
@@ -140,6 +141,35 @@ public class ProductController {
                 throw new BaseException(PATCH_PRODUCT_STATUS_INVALID_OR_EMPTY_PARAMETER);
             }
         }catch (BaseException e){
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 판매 상품 내역 조회 API
+     * [GET] /app/products/:userId/items?order=&status=
+     *
+     * @return BaseResponse<GetProductSimpleRes>
+     */
+    @GetMapping("/{userId}/items")
+    public BaseResponse<List<GetProductSimpleRes>> getProductsByUserId(@PathVariable int userId,
+                                                                       @RequestParam(value = "order", required = false, defaultValue = "recent") String order,
+                                                                       @RequestParam(value = "status", required = false, defaultValue = "for-sale") String status) {
+        ArrayList<String> orderValues = new ArrayList<>(Arrays.asList("recent", "popular", "low", "high"));
+        ArrayList<String> statusValues = new ArrayList<>(Arrays.asList("for-sale", "all", "reserved", "sold-out", "pay-avail", "ad"));
+
+        try {
+            jwtService.validateTokenExpired();
+
+            if(!orderValues.contains(order)) {
+                throw new BaseException(GET_PRODUCT_INVALID_QUERY_STRING_ORDER);
+            }
+            if(!statusValues.contains(status)) {
+                throw new BaseException(GET_PRODUCT_INVALID_QUERY_STRING_STATUS);
+            }
+            List<GetProductSimpleRes> getProductsByUserIdRes = productProvider.getProductsByUserId(userId, order, status);
+            return new BaseResponse<>(getProductsByUserIdRes);
+        } catch (BaseException e) {
             return new BaseResponse<>((e.getStatus()));
         }
     }

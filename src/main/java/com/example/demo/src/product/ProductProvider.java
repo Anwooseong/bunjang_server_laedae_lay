@@ -3,16 +3,16 @@ package com.example.demo.src.product;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.dto.MainProductDto;
-import com.example.demo.src.product.model.GetMainProductRes;
-import com.example.demo.src.product.model.GetProductDetailRes;
-import com.example.demo.src.product.model.GetSearchProductRes;
-import com.example.demo.src.product.model.GetSimilarProductRes;
+import com.example.demo.src.product.model.*;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductProvider {
 
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final JwtService jwtService;
     private final ProductDao productDao;
 
@@ -145,6 +146,29 @@ public class ProductProvider {
         } catch(BaseException be) {
             throw new BaseException(be.getStatus());
         }catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public List<GetProductSimpleRes> getProductsByUserId(int productId, String order, String status) throws BaseException {
+        try {
+            switch (status) {
+                case "sold-out":
+                    status = "SO";
+                    break;
+                case "for-sale":
+                    status = "FS";
+                    break;
+                case "reserved":
+                    status = "R";
+                    break;
+            }
+
+            List<GetProductSimpleRes> getProductsByUserIdRes = productDao.getProductsByUserId(productId, order, status);
+            logger.info("provider:" + getProductsByUserIdRes.toString());
+            return getProductsByUserIdRes;
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }

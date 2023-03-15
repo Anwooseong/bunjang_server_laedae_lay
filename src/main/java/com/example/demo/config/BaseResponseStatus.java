@@ -87,6 +87,8 @@ public enum BaseResponseStatus {
     GET_TAG_QUERY_PARAMETER(false, 2071, "쿼리 파라미터에 query부분이 null로 들어왔습니다."),
     GET_PRODUCT_QUERY_PARAMETER(false, 2072, "쿼리 파라미터에 query부분이 null로 들어왔습니다."),
     GET_PRODUCT_ORDER_PARAMETER(false, 2073, "쿼리 파라미터에 order부분이 null로 들어왔습니다."),
+    GET_PRODUCT_INVALID_QUERY_STRING_ORDER(false, 2074, "Query String에서 order 값이 부적절합니다. recent(최신순), popular(인기순), low(저가순), high(고가순) 중의 하나의 값을 가져야합니다."),
+    GET_PRODUCT_INVALID_QUERY_STRING_STATUS(false, 2075, "Query String에서 status 값이 부적절합니다. for-sale(판매중), all(전체), reserved(예약중), sold-out(판매완료), pay-avail(페이가능), ad(광고중) 중의 하나의 값을 가져야합니다."),
 
 
     /**
