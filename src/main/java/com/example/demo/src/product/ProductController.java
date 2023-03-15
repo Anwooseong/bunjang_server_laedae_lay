@@ -2,16 +2,11 @@ package com.example.demo.src.product;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.model.*;
-import com.example.demo.src.s3.S3Uploader;
 import com.example.demo.utils.JwtService;
-import com.example.demo.utils.ValidationRegex;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sun.net.www.protocol.http.AuthenticatorKeys;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,9 +147,9 @@ public class ProductController {
      * @return BaseResponse<GetProductSimpleRes>
      */
     @GetMapping("/{userId}/items")
-    public BaseResponse<List<GetProductSimpleRes>> getProductsByUserId(@PathVariable int userId,
-                                                                       @RequestParam(value = "order", required = false, defaultValue = "recent") String order,
-                                                                       @RequestParam(value = "status", required = false, defaultValue = "for-sale") String status) {
+    public BaseResponse<List<GetProductInRowRes>> getProductsByUserId(@PathVariable int userId,
+                                                                      @RequestParam(value = "order", required = false, defaultValue = "recent") String order,
+                                                                      @RequestParam(value = "status", required = false, defaultValue = "for-sale") String status) {
         ArrayList<String> orderValues = new ArrayList<>(Arrays.asList("recent", "popular", "low", "high"));
         ArrayList<String> statusValues = new ArrayList<>(Arrays.asList("for-sale", "all", "reserved", "sold-out", "pay-avail", "ad"));
 
@@ -167,7 +162,7 @@ public class ProductController {
             if(!statusValues.contains(status)) {
                 throw new BaseException(GET_PRODUCT_INVALID_QUERY_STRING_STATUS);
             }
-            List<GetProductSimpleRes> getProductsByUserIdRes = productProvider.getProductsByUserId(userId, order, status);
+            List<GetProductInRowRes> getProductsByUserIdRes = productProvider.getProductsByUserId(userId, order, status);
             return new BaseResponse<>(getProductsByUserIdRes);
         } catch (BaseException e) {
             return new BaseResponse<>((e.getStatus()));

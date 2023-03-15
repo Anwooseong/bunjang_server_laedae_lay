@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetProductSimpleRes {
+public class GetProductInRowRes {
     private int productId;
     private String title;
     private String imgUrl;

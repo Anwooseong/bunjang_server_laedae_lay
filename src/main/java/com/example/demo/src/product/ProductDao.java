@@ -1,17 +1,12 @@
 package com.example.demo.src.product;
 
-import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.*;
-import com.example.demo.src.user.model.User;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -212,7 +207,7 @@ public class ProductDao {
         return this.jdbcTemplate.update(modifyProductStatusQuery, modifyProductStatusParams);
     }
 
-    public List<GetProductSimpleRes> getProductsByUserId(int userId, String order, String status) {
+    public List<GetProductInRowRes> getProductsByUserId(int userId, String order, String status) {
         String getProductsByUserIdQuery = "select P.id as product_id, title, url as img_url, is_safe_pay, " +
                 "content, location_address, P.seller_id, P.price, TIMESTAMPDIFF(DAY, P.created_at, curdate()) as 'day_created_from', " +
                 "GREATEST((TIMESTAMPDIFF(HOUR, P.created_at, curdate()) - 24 * TIMESTAMPDIFF(DAY, P.created_at, curdate())), 0) as 'hour_created_from', " +
@@ -262,7 +257,7 @@ public class ProductDao {
         System.out.println("dao:" + getProductsByUserIdQuery);
 
         return this.jdbcTemplate.query(getProductsByUserIdQuery,
-                (rs,rowNum) -> new GetProductSimpleRes(
+                (rs,rowNum) -> new GetProductInRowRes(
                         rs.getInt("product_id"),
                         rs.getString("title"),
                         rs.getString("img_url"),

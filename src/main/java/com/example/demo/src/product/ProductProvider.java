@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -151,7 +149,7 @@ public class ProductProvider {
         }
     }
 
-    public List<GetProductSimpleRes> getProductsByUserId(int productId, String order, String status) throws BaseException {
+    public List<GetProductInRowRes> getProductsByUserId(int productId, String order, String status) throws BaseException {
         try {
             switch (status) {
                 case "sold-out":
@@ -165,7 +163,7 @@ public class ProductProvider {
                     break;
             }
 
-            List<GetProductSimpleRes> getProductsByUserIdRes = productDao.getProductsByUserId(productId, order, status);
+            List<GetProductInRowRes> getProductsByUserIdRes = productDao.getProductsByUserId(productId, order, status);
             logger.info("provider:" + getProductsByUserIdRes.toString());
             return getProductsByUserIdRes;
         } catch (Exception e) {
