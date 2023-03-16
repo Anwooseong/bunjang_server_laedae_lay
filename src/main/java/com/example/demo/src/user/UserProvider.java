@@ -231,6 +231,15 @@ public class UserProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<GetUserAddressRes> getUserAddresses(int userId) throws BaseException {
+        try {
+            List<GetUserAddressRes> getUserAddressesRes = userDao.getUserAddresses(userId);
+            return getUserAddressesRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
 
 
