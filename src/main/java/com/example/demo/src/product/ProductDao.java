@@ -1,17 +1,12 @@
 package com.example.demo.src.product;
 
-import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.product.dto.MainProductDto;
 import com.example.demo.src.product.model.*;
-import com.example.demo.src.user.model.User;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -210,5 +205,71 @@ public class ProductDao {
         String modifyProductStatusQuery = "update Product set transaction_status=? where id=?";
         Object[] modifyProductStatusParams = new Object[]{ status, productid };
         return this.jdbcTemplate.update(modifyProductStatusQuery, modifyProductStatusParams);
+    }
+
+    public List<GetProductInRowRes> getProductsByUserId(int userId, String order, String status) {
+        String getProductsByUserIdQuery = "select P.id as product_id, title, url as img_url, is_safe_pay, " +
+                "content, location_address, P.seller_id, P.price, TIMESTAMPDIFF(DAY, P.created_at, curdate()) as 'day_created_from', " +
+                "GREATEST((TIMESTAMPDIFF(HOUR, P.created_at, curdate()) - 24 * TIMESTAMPDIFF(DAY, P.created_at, curdate())), 0) as 'hour_created_from', " +
+                "P.created_at " +
+                "from Product P left join ProductImg PI on PI.product_id = P.id  where seller_id = ?";
+
+        String whereClause = " and transaction_status = ?";     // default: 판매중, 전체, 예약중 중 하나
+        String groupByField = " group by P.id";
+        String orderByField = " order by P.id desc";     // default: '최신'순 정렬
+        Object[] getProductsByUserIdParams = new Object[]{ userId };
+
+        // 동적 쿼리 처리
+        // order 값에 따라 쿼리문 추가
+        if(order.equals("recent")) {
+            groupByField += ", P.created_at";
+        }
+        else if(order.equals("popular")) {
+            groupByField += ", P.view";
+            orderByField = ", P.view order by P.view desc";
+        }
+        else if(order.equals("low")) {
+            groupByField += ", P.price";
+            orderByField = ", P.price order by P.price";
+        }
+        else if(order.equals("high")) {
+            groupByField += ", P.price";
+            orderByField = ", P.price order by P.price desc";
+        }
+
+        // status 값에 따라 쿼리문 where절 수정
+        if(status.equals("pay-avail")) {
+            whereClause = " and is_safe_pay = 'Y'";
+        }
+        else if(status.equals("ad")) {
+            whereClause = " and is_ad = 'Y'";
+        }
+        else if(status.equals("all")){
+            whereClause = "";
+        }
+        else {   // 판매중, 전체, 예약중 인 경우 status 값 필요
+            getProductsByUserIdParams = new Object[]{ userId, status };
+        }
+
+        getProductsByUserIdQuery = getProductsByUserIdQuery + whereClause + groupByField + orderByField;
+
+        System.out.println("dao: " + order + "  " + status);
+        System.out.println("dao:" + getProductsByUserIdQuery);
+
+        return this.jdbcTemplate.query(getProductsByUserIdQuery,
+                (rs,rowNum) -> new GetProductInRowRes(
+                        rs.getInt("product_id"),
+                        rs.getString("title"),
+                        rs.getString("img_url"),
+                        rs.getString("is_safe_pay"),
+                        rs.getString("content"),
+                        rs.getString("location_address"),
+                        rs.getInt("seller_id"),
+                        rs.getInt("price"),
+                        rs.getInt("day_created_from"),
+                        rs.getInt("hour_created_from"),
+                        rs.getString("created_at")
+                )
+                , getProductsByUserIdParams);
     }
 }
