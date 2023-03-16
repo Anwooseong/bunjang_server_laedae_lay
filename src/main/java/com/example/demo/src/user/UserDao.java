@@ -773,7 +773,7 @@ public class UserDao {
         return this.jdbcTemplate.update(updateUserDefaultAddressQuery, updateUserDefaultAddressParams);
     }
 
-    public int updateUserAddresses(int userId, int addressId, PatchUserAddressReq patchUserAddressReq) {
+    public int updateUserAddresses(int addressId, PatchUserAddressReq patchUserAddressReq) {
         String updateUserAddressesQuery = "update UserAddress " +
                 "set name = ?, street_address = ?, " +
                 "detail_address = ?, phone_number = ? " +
@@ -787,5 +787,12 @@ public class UserDao {
         };
 
         return this.jdbcTemplate.update(updateUserAddressesQuery, updateUserAddressesParams);
+    }
+
+    public int deleteUserAddresses(int addressId) {
+        String deleteUserAddressesQuery = "update UserAddress set status = 'D' where id = ?";
+        int deleteUserAddressesParams = addressId;
+
+        return this.jdbcTemplate.update(deleteUserAddressesQuery, deleteUserAddressesParams);
     }
 }
