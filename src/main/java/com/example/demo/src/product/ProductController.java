@@ -185,4 +185,25 @@ public class ProductController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
+
+    /**
+     *  내 상품 정보 수정  API
+     * [PATCH] /app/products/:productId
+     * @return BaseResponse<String>
+     */
+    @PatchMapping(value="/{productId}", consumes = {"multipart/form-data"})
+    public BaseResponse<String> updateProduct(@PathVariable int productId,
+                                                      @RequestPart(value = "file") List<MultipartFile> images,
+                                              @RequestPart(value = "patchProductReq") PatchProductReq patchProductReq) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, patchProductReq.getUserId());
+
+            String postProductRes = productService.updateProduct(productId, patchProductReq, images);
+            return new BaseResponse<>(postProductRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
 }

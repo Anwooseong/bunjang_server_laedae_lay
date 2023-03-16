@@ -272,4 +272,31 @@ public class ProductDao {
                 )
                 , getProductsByUserIdParams);
     }
+
+
+    public int deleteProductImgAll(int productId) {
+        String deleteProductImgAllQuery = "delete from ProductImg where id IN (select id from (select id from ProductImg where ProductImg.product_id = ?) as A)";
+        int deleteProductImgAllParams = productId;
+        return this.jdbcTemplate.update(deleteProductImgAllQuery, deleteProductImgAllParams);
+    }
+
+    public int deleteProductTagAll(int productId) {
+        String deleteProductTagAllQuery = "update Product_Tag set status = 'D' where id IN (select id from (select id from Product_Tag where Product_Tag.product_id = ?) as A)";
+        int deleteProductTagAllParams = productId;
+        return this.jdbcTemplate.update(deleteProductTagAllQuery, deleteProductTagAllParams);
+    }
+
+    public int updateProduct(int productId, PatchProductReq patchProductReq) {
+        String updateProductQuery = "update Product set seller_id = ?, title = ?, content = ?, price = ?, amount = ?, is_new = ?, is_safe_pay = ?, " +
+                "has_delivery_fee = ?, is_interchangable = ?, location_address = ?, major_category_id = ?, middle_category_id = ?, sub_category_id = ? " +
+                "where Product.id = ?";
+        Object[] updateProductParams = new Object[]{
+                patchProductReq.getUserId(), patchProductReq.getTitle(), patchProductReq.getContent(),
+                patchProductReq.getPrice(), patchProductReq.getAmount(), patchProductReq.getCheckNewProduct(),
+                patchProductReq.getCheckPay(), patchProductReq.getHasDeliveryFee(), patchProductReq.getCheckExchange(),
+                patchProductReq.getRegion(), patchProductReq.getMajorCategoryId(), patchProductReq.getMiddleCategoryId(),
+                patchProductReq.getSubCategoryId(), productId
+        };
+        return this.jdbcTemplate.update(updateProductQuery, updateProductParams);
+    }
 }

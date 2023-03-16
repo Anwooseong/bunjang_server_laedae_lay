@@ -92,6 +92,12 @@ public enum BaseResponseStatus {
     POST_USER_ADDRESS_CREATE_FAIL(false, 2076, "배송지 추가 요청이 실패하였습니다."),
     PATCH_USER_ADDRESS_UPDATE_FAIL(false, 2077, "배송지 수정 요청이 실패하였습니다"),
     PATCH_USER_ADDRESS_DELETE_FAIL(false, 2078, "배송지 삭제 요청이 실패하였습니다."),
+    PATCH_USER_PRODUCT_UPDATE_FAIL(false, 2079, "상품 정보 수정에 실패하였습니다."),
+    PATCH_PRODUCT_IMG_DELETE_ALL_FAIL(false, 2080, "상품 이미지 전체 삭제에 실패하였습니다."),
+    PATCH_USER_PRODUCT_IMG_CREATE_FAIL(false, 2081, "상품 이미지 리스트 등록에 실패하였습니다."),
+    PATCH_USER_PRODUCT_TAG_DELETE_ALL_FAIL(false, 2082, "상품의 태그 리스트 전체 삭제에 실패하였습니다."),
+
+
 
     /**
      * 3000 : Response 오류
