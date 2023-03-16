@@ -11,11 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostProductRes {
+public class PostProductDetailRes {
     private int productId;
-    private List<String > imageUrl;
 
-    public PostProductRes(int productId) {
-        this.productId = productId;
-    }
 }

@@ -16,4 +16,11 @@ public class GetMainProductRes {
     List<MainProductDto> manShoes;
     List<MainProductDto> womenShoes;
     List<MainProductDto> sneakers;
+
+    public GetMainProductRes(List<MainProductDto> manPadding, List<MainProductDto> womenPadding, List<MainProductDto> manShoes, List<MainProductDto> sneakers) {
+        this.manPadding = manPadding;
+        this.womenPadding = womenPadding;
+        this.manShoes = manShoes;
+        this.sneakers = sneakers;
+    }
 }

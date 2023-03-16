@@ -168,4 +168,21 @@ public class ProductController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
+    /**
+     * 판매 상품 등록  API
+     * [POST] /app/products/enrollment
+     * @return BaseResponse<PostProductDetailRes>
+     */
+    @PostMapping("/enrollment")
+    public BaseResponse<PostProductDetailRes> createProduct(@RequestBody PostProductReq postProductReq) {
+        try {
+            int userId = jwtService.getUserId();
+            jwtService.validateUserByJwt(userId, postProductReq.getUserId());
+            PostProductDetailRes postProductRes = productService.createProduct(postProductReq);
+            return new BaseResponse<>(postProductRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
 }
