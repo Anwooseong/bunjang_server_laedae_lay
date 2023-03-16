@@ -2,6 +2,7 @@ package com.example.demo.src.product;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.product.model.PostProductDetailRes;
 import com.example.demo.src.product.model.PostProductReq;
 import com.example.demo.src.product.model.PostProductRes;
 import com.example.demo.src.s3.S3Uploader;
@@ -80,6 +81,30 @@ public class ProductService {
             return "상품 상태 변경에 성공하였습니다.";
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostProductDetailRes createProduct(PostProductReq postProductReq) throws BaseException{
+        if (postProductReq.getAmount() < 1){
+            throw new BaseException(BaseResponseStatus.POST_PRODUCT_AMOUNT_POSITIVE);
+        }
+        if (postProductReq.getTagIds().size() > 6){
+            throw new BaseException(BaseResponseStatus.POST_PRODUCT_TAG_SIZE);
+        }
+        try {
+            int lastInsertId = productDao.createProduct(postProductReq);
+            productDao.createProductImage(lastInsertId, "https://bungae-bucket.s3.ap-northeast-2.amazonaws.com/b1.jpg");
+            productDao.createProductImage(lastInsertId, "https://bungae-bucket.s3.ap-northeast-2.amazonaws.com/b2.jpg");
+            productDao.createProductImage(lastInsertId, "https://bungae-bucket.s3.ap-northeast-2.amazonaws.com/b3.jpg");
+            productDao.createProductImage(lastInsertId, "https://bungae-bucket.s3.ap-northeast-2.amazonaws.com/b4.jpg");
+            productDao.createProductImage(lastInsertId, "https://bungae-bucket.s3.ap-northeast-2.amazonaws.com/b5.jpg");
+
+            for (Integer tagId : postProductReq.getTagIds()) {
+                productDao.createProductTag(lastInsertId, tagId);
+            }
+            return new PostProductDetailRes(lastInsertId);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 }
