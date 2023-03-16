@@ -772,4 +772,20 @@ public class UserDao {
 
         return this.jdbcTemplate.update(updateUserDefaultAddressQuery, updateUserDefaultAddressParams);
     }
+
+    public int updateUserAddresses(int userId, int addressId, PatchUserAddressReq patchUserAddressReq) {
+        String updateUserAddressesQuery = "update UserAddress " +
+                "set name = ?, street_address = ?, " +
+                "detail_address = ?, phone_number = ? " +
+                "where id = ?";
+        Object[] updateUserAddressesParams = new Object[]{
+                patchUserAddressReq.getName(),
+                patchUserAddressReq.getStreetAddress(),
+                patchUserAddressReq.getDetailAddress(),
+                patchUserAddressReq.getPhoneNumber(),
+                addressId
+        };
+
+        return this.jdbcTemplate.update(updateUserAddressesQuery, updateUserAddressesParams);
+    }
 }

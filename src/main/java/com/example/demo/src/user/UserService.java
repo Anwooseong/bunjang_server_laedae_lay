@@ -211,4 +211,21 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public String updateUserAddresses(int userId, int addressId, PatchUserAddressReq patchUserAddressReq) throws BaseException {
+        try {
+            int result = userDao.updateUserAddresses(userId, addressId, patchUserAddressReq);
+            if(result == 0) {
+                throw new BaseException(PATCH_USER_ADDRESS_UPDATE_FAIL);
+            }
+
+            // 기본 배송지로 설정할 시
+            if(patchUserAddressReq.getIsDefault().equals("Y")) {
+                userDao.updateUserDefaultAddress(result, userId);
+            }
+            return "배송지 수정 요청이 성공하였습니다.";
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

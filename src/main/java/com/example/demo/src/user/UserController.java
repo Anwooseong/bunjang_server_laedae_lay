@@ -348,6 +348,26 @@ public class UserController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
+    /**
+     * 배송지 주소 수정 API
+     * [PATCH] /app/users/{userId}/addresses/{addressId}
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/{userId}/addresses/{addressId}")
+    public BaseResponse<String> updateUserAddresses(@PathVariable int userId, @PathVariable int addressId, @RequestBody PatchUserAddressReq patchUserAddressReq) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            String updateUserAddressesRes = userService.updateUserAddresses(userId, addressId, patchUserAddressReq);
+            return new BaseResponse<>(updateUserAddressesRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+
 }
 
 
