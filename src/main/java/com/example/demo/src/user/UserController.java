@@ -105,7 +105,7 @@ public class UserController {
             int userIdByJwt = jwtService.getUserId();  // 토큰에서 userId 추출 / 토큰 만료, 빈 토큰, 부적합 토큰 체크
             jwtService.validateUserByJwt(userIdByJwt, userId);  // user 권한만 체크
 
-            userService.withDrawUser(15);
+            userService.withDrawUser(userId);
             String result = "요청 성공";
 
             return new BaseResponse<>(result);
