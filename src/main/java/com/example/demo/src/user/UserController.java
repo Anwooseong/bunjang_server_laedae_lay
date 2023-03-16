@@ -105,7 +105,7 @@ public class UserController {
             int userIdByJwt = jwtService.getUserId();  // 토큰에서 userId 추출 / 토큰 만료, 빈 토큰, 부적합 토큰 체크
             jwtService.validateUserByJwt(userIdByJwt, userId);  // user 권한만 체크
 
-            userService.withDrawUser(15);
+            userService.withDrawUser(userId);
             String result = "요청 성공";
 
             return new BaseResponse<>(result);
@@ -325,6 +325,62 @@ public class UserController {
 
             List<GetUserAddressRes> getUserAddressesRes = userProvider.getUserAddresses(userId);
             return new BaseResponse<>(getUserAddressesRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+
+    /**
+     * 배송지 주소 추가 API
+     * [POST] /app/users/{userId}/addresses
+     * @return BaseResponse<String>
+     */
+    @PostMapping("/{userId}/addresses")
+    public BaseResponse<String> createUserAddresses(@PathVariable int userId, @RequestBody PostUserAddressReq PostUserAddressReq) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            String createUserAddressesRes = userService.createUserAddresses(userId, PostUserAddressReq);
+            return new BaseResponse<>(createUserAddressesRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 배송지 주소 수정 API
+     * [PATCH] /app/users/{userId}/addresses/{addressId}
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/{userId}/addresses/{addressId}")
+    public BaseResponse<String> updateUserAddresses(@PathVariable int userId, @PathVariable int addressId, @RequestBody PatchUserAddressReq patchUserAddressReq) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            String updateUserAddressesRes = userService.updateUserAddresses(userId, addressId, patchUserAddressReq);
+            return new BaseResponse<>(updateUserAddressesRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+
+    /**
+     * 배송지 주소 삭제 API
+     * [PATCH] /app/users/{userId}/addresses/{addressId}/status
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/{userId}/addresses/{addressId}/status")
+    public BaseResponse<String> deleteUserAddresses(@PathVariable int userId, @PathVariable int addressId) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            String deleteUserAddressesRes = userService.deleteUserAddresses(addressId);
+            return new BaseResponse<>(deleteUserAddressesRes);
         } catch (BaseException e) {
             return new BaseResponse<>((e.getStatus()));
         }

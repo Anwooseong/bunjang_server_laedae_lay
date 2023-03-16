@@ -89,7 +89,9 @@ public enum BaseResponseStatus {
     GET_PRODUCT_ORDER_PARAMETER(false, 2073, "쿼리 파라미터에 order부분이 null로 들어왔습니다."),
     GET_PRODUCT_INVALID_QUERY_STRING_ORDER(false, 2074, "Query String에서 order 값이 부적절합니다. recent(최신순), popular(인기순), low(저가순), high(고가순) 중의 하나의 값을 가져야합니다."),
     GET_PRODUCT_INVALID_QUERY_STRING_STATUS(false, 2075, "Query String에서 status 값이 부적절합니다. for-sale(판매중), all(전체), reserved(예약중), sold-out(판매완료), pay-avail(페이가능), ad(광고중) 중의 하나의 값을 가져야합니다."),
-
+    POST_USER_ADDRESS_CREATE_FAIL(false, 2076, "배송지 추가 요청이 실패하였습니다."),
+    PATCH_USER_ADDRESS_UPDATE_FAIL(false, 2077, "배송지 수정 요청이 실패하였습니다"),
+    PATCH_USER_ADDRESS_DELETE_FAIL(false, 2078, "배송지 삭제 요청이 실패하였습니다."),
 
     /**
      * 3000 : Response 오류

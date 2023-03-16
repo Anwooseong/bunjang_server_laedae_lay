@@ -194,4 +194,51 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public String createUserAddresses(int userId, PostUserAddressReq postUserAddressReq) throws BaseException {
+        try {
+            int result = userDao.createUserAddresses(userId, postUserAddressReq);
+            if(result == 0) {
+                throw new BaseException(POST_USER_ADDRESS_CREATE_FAIL);
+            }
+
+            // 기본 배송지로 설정할 시
+            if(postUserAddressReq.getIsDefault().equals("Y")) {
+                userDao.updateUserDefaultAddress(result, userId);
+            }
+            return "배송지 추가 요청이 성공하였습니다.";
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public String updateUserAddresses(int userId, int addressId, PatchUserAddressReq patchUserAddressReq) throws BaseException {
+        try {
+            int result = userDao.updateUserAddresses(addressId, patchUserAddressReq);
+            if(result == 0) {
+                throw new BaseException(PATCH_USER_ADDRESS_UPDATE_FAIL);
+            }
+
+            // 기본 배송지로 설정할 시
+            if(patchUserAddressReq.getIsDefault().equals("Y")) {
+                userDao.updateUserDefaultAddress(result, userId);
+            }
+            return "배송지 수정 요청이 성공하였습니다.";
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public String deleteUserAddresses(int addressId) throws BaseException {
+        try {
+            int result = userDao.deleteUserAddresses(addressId);
+            if(result == 0) {
+                throw new BaseException(PATCH_USER_ADDRESS_DELETE_FAIL);
+            }
+
+            return "배송지 삭제 요청이 성공하였습니다.";
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
