@@ -329,6 +329,25 @@ public class UserController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
+
+    /**
+     * 배송지 주소 추가 API
+     * [POST] /app/users/{userId}/addresses
+     * @return BaseResponse<String>
+     */
+    @PostMapping("/{userId}/addresses")
+    public BaseResponse<String> createUserAddresses(@PathVariable int userId, @RequestBody PostUserAddressReq PostUserAddressReq) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            String createUserAddressesRes = userService.createUserAddresses(userId, PostUserAddressReq);
+            return new BaseResponse<>(createUserAddressesRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
 }
 
 

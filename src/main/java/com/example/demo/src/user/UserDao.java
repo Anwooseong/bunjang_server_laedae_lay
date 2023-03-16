@@ -752,4 +752,24 @@ public class UserDao {
                 )
                 ,getUserAddressesResParams);
     }
+
+    public int createUserAddresses(int userId, PostUserAddressReq postUserAddressReq) {
+        String createUserAddressesQuery = "insert into UserAddress(user_id, name, phone_number, street_address, detail_address) " +
+                "values (?, ?, ?, ?, ?)";
+        Object[] createUserAddressesParams = new Object[] {
+                userId, postUserAddressReq.getName(), postUserAddressReq.getPhoneNumber(), postUserAddressReq.getStreetAddress(), postUserAddressReq.getDetailAddress()
+        };
+
+        this.jdbcTemplate.update(createUserAddressesQuery, createUserAddressesParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int updateUserDefaultAddress(int addressId, int userId) {
+        String updateUserDefaultAddressQuery = "update User set default_address_id = ? where id = ?";
+        Object[] updateUserDefaultAddressParams = new Object[]{ addressId, userId };
+
+        return this.jdbcTemplate.update(updateUserDefaultAddressQuery, updateUserDefaultAddressParams);
+    }
 }

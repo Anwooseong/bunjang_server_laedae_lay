@@ -194,4 +194,21 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public String createUserAddresses(int userId, PostUserAddressReq postUserAddressReq) throws BaseException {
+        try {
+            int result = userDao.createUserAddresses(userId, postUserAddressReq);
+            if(result == 0) {
+                throw new BaseException(POST_USER_ADDRESS_CREATE_FAIL);
+            }
+
+            // 기본 배송지로 설정할 시
+            if(postUserAddressReq.getIsDefault().equals("Y")) {
+                userDao.updateUserDefaultAddress(result, userId);
+            }
+            return "배송지 추가 요청이 성공하였습니다.";
+        }catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
