@@ -734,4 +734,22 @@ public class UserDao {
                 )
                 ,getStoreDetailResParam);
     }
+
+    public List<GetUserAddressRes> getUserAddresses(int userId) {
+        String getUserAddressesResQuery = "select id, name, street_address, detail_address, " +
+                "IF((select default_address_id from User where id = ?) = id, 'Y', 'N') as 'is_default', phone_number " +
+                "from UserAddress where user_id = ?";
+        Object[] getUserAddressesResParams = new Object[]{ userId, userId };
+
+        return this.jdbcTemplate.query(getUserAddressesResQuery,
+                (rs, rowNum) -> new GetUserAddressRes(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("street_address"),
+                        rs.getString("detail_address"),
+                        rs.getString("is_default"),
+                        rs.getString("phone_number")
+                )
+                ,getUserAddressesResParams);
+    }
 }

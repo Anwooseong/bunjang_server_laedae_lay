@@ -311,6 +311,24 @@ public class UserController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
+    /**
+     * 배송지 주소 전체 조회 API
+     * [GET] /app/users/{userId}/addresses
+     * @return BaseResponse<List<GetUserAddressRes>>
+     */
+    @GetMapping("/{userId}/addresses")
+    public BaseResponse<List<GetUserAddressRes>> getUserAddresses(@PathVariable int userId) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            List<GetUserAddressRes> getUserAddressesRes = userProvider.getUserAddresses(userId);
+            return new BaseResponse<>(getUserAddressesRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
 }
 
 
