@@ -182,4 +182,16 @@ public class ProductProvider {
         }
     }
 
+    public List<GetProductInMiddleRes> getProductsInMiddle(int userId, int categoryId, String order) throws BaseException {
+        try {
+            List<GetProductInMiddleRes> getProductsInMiddleRes = productDao.getProductsInMiddle(userId, categoryId, order);
+            return getProductsInMiddleRes;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+
+
 }

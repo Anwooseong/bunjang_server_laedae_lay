@@ -340,4 +340,45 @@ public class ProductDao {
                 )
                 , getProductsInMajorParams);
     }
+
+    public List<GetProductInMiddleRes> getProductsInMiddle(int userId, int categoryId, String order) {
+        String GetProductInMiddleResQuery = "select P.id as product_id, title, url as img_url, seller_id, is_safe_pay, is_ad, " +
+                "       IF(exists(select * from MyProduct where user_id = ? and product_id = P.id), 'Y', 'N') as 'is_in_my_product', " +
+                "P.price, P.is_safe_care, P.created_at, P.view " +
+                "from Product P left join ProductImg PI on PI.product_id = P.id " +
+                "where middle_category_id = ? " +
+                "group by P.id";
+        Object[] GetProductInMiddleResParams = new Object[]{ userId, categoryId };
+
+        // order 값에 따라 쿼리문 추가
+        if(order.equals("recent")) {
+            GetProductInMiddleResQuery += ", P.created_at order by P.created_at desc";
+        }
+        else if(order.equals("popular")) {
+            GetProductInMiddleResQuery += ", P.view order by P.view desc";
+        }
+        else if(order.equals("low")) {
+            GetProductInMiddleResQuery += ", P.price order by P.price";
+        }
+        else if(order.equals("high")) {
+            GetProductInMiddleResQuery += ", P.price order by P.price desc";
+        }
+
+
+        return this.jdbcTemplate.query(GetProductInMiddleResQuery,
+                (rs,rowNum)->new GetProductInMiddleRes(
+                        rs.getInt("product_id"),
+                        rs.getString("title"),
+                        rs.getString("img_url"),
+                        rs.getInt("seller_id"),
+                        rs.getString("is_safe_pay"),
+                        rs.getString("is_ad"),
+                        rs.getString("is_in_my_product"),
+                        rs.getInt("price"),
+                        rs.getString("is_safe_care"),
+                        rs.getString("created_at"),
+                        rs.getInt("view")
+                )
+                , GetProductInMiddleResParams);
+    }
 }
