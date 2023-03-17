@@ -272,4 +272,113 @@ public class ProductDao {
                 )
                 , getProductsByUserIdParams);
     }
+
+
+    public int deleteProductImgAll(int productId) {
+        String deleteProductImgAllQuery = "delete from ProductImg where id IN (select id from (select id from ProductImg where ProductImg.product_id = ?) as A)";
+        int deleteProductImgAllParams = productId;
+        return this.jdbcTemplate.update(deleteProductImgAllQuery, deleteProductImgAllParams);
+    }
+
+    public int deleteProductTagAll(int productId) {
+        String deleteProductTagAllQuery = "update Product_Tag set status = 'D' where id IN (select id from (select id from Product_Tag where Product_Tag.product_id = ?) as A)";
+        int deleteProductTagAllParams = productId;
+        return this.jdbcTemplate.update(deleteProductTagAllQuery, deleteProductTagAllParams);
+    }
+
+    public int updateProduct(int productId, PatchProductReq patchProductReq) {
+        String updateProductQuery = "update Product set seller_id = ?, title = ?, content = ?, price = ?, amount = ?, is_new = ?, is_safe_pay = ?, " +
+                "has_delivery_fee = ?, is_interchangable = ?, location_address = ?, major_category_id = ?, middle_category_id = ?, sub_category_id = ? " +
+                "where Product.id = ?";
+        Object[] updateProductParams = new Object[]{
+                patchProductReq.getUserId(), patchProductReq.getTitle(), patchProductReq.getContent(),
+                patchProductReq.getPrice(), patchProductReq.getAmount(), patchProductReq.getCheckNewProduct(),
+                patchProductReq.getCheckPay(), patchProductReq.getHasDeliveryFee(), patchProductReq.getCheckExchange(),
+                patchProductReq.getRegion(), patchProductReq.getMajorCategoryId(), patchProductReq.getMiddleCategoryId(),
+                patchProductReq.getSubCategoryId(), productId
+        };
+        return this.jdbcTemplate.update(updateProductQuery, updateProductParams);
+    }
+
+    public List<GetProductInMajorRes> getProductsInMajor(int userId, int categoryId, String order) {
+        String getProductsInMajorQuery = "select P.id as product_id, title, url as img_url, seller_id, is_safe_pay, is_ad, " +
+                "       IF(exists(select * from MyProduct where user_id = ? and product_id = P.id), 'Y', 'N') as 'is_in_my_product', " +
+                "P.price, P.is_safe_care, P.created_at, P.view " +
+                "from Product P left join ProductImg PI on PI.product_id = P.id " +
+                "where major_category_id = ? " +
+                "group by P.id";
+        Object[] getProductsInMajorParams = new Object[]{ userId, categoryId };
+
+        // order 값에 따라 쿼리문 추가
+        if(order.equals("recent")) {
+            getProductsInMajorQuery += ", P.created_at order by P.created_at desc";
+        }
+        else if(order.equals("popular")) {
+            getProductsInMajorQuery += ", P.view order by P.view desc";
+        }
+        else if(order.equals("low")) {
+            getProductsInMajorQuery += ", P.price order by P.price";
+        }
+        else if(order.equals("high")) {
+            getProductsInMajorQuery += ", P.price order by P.price desc";
+        }
+
+
+        return this.jdbcTemplate.query(getProductsInMajorQuery,
+                (rs,rowNum)->new GetProductInMajorRes(
+                        rs.getInt("product_id"),
+                        rs.getString("title"),
+                        rs.getString("img_url"),
+                        rs.getInt("seller_id"),
+                        rs.getString("is_safe_pay"),
+                        rs.getString("is_ad"),
+                        rs.getString("is_in_my_product"),
+                        rs.getInt("price"),
+                        rs.getString("is_safe_care"),
+                        rs.getString("created_at"),
+                        rs.getInt("view")
+                )
+                , getProductsInMajorParams);
+    }
+
+    public List<GetProductInMiddleRes> getProductsInMiddle(int userId, int categoryId, String order) {
+        String GetProductInMiddleResQuery = "select P.id as product_id, title, url as img_url, seller_id, is_safe_pay, is_ad, " +
+                "       IF(exists(select * from MyProduct where user_id = ? and product_id = P.id), 'Y', 'N') as 'is_in_my_product', " +
+                "P.price, P.is_safe_care, P.created_at, P.view " +
+                "from Product P left join ProductImg PI on PI.product_id = P.id " +
+                "where middle_category_id = ? " +
+                "group by P.id";
+        Object[] GetProductInMiddleResParams = new Object[]{ userId, categoryId };
+
+        // order 값에 따라 쿼리문 추가
+        if(order.equals("recent")) {
+            GetProductInMiddleResQuery += ", P.created_at order by P.created_at desc";
+        }
+        else if(order.equals("popular")) {
+            GetProductInMiddleResQuery += ", P.view order by P.view desc";
+        }
+        else if(order.equals("low")) {
+            GetProductInMiddleResQuery += ", P.price order by P.price";
+        }
+        else if(order.equals("high")) {
+            GetProductInMiddleResQuery += ", P.price order by P.price desc";
+        }
+
+
+        return this.jdbcTemplate.query(GetProductInMiddleResQuery,
+                (rs,rowNum)->new GetProductInMiddleRes(
+                        rs.getInt("product_id"),
+                        rs.getString("title"),
+                        rs.getString("img_url"),
+                        rs.getInt("seller_id"),
+                        rs.getString("is_safe_pay"),
+                        rs.getString("is_ad"),
+                        rs.getString("is_in_my_product"),
+                        rs.getInt("price"),
+                        rs.getString("is_safe_care"),
+                        rs.getString("created_at"),
+                        rs.getInt("view")
+                )
+                , GetProductInMiddleResParams);
+    }
 }

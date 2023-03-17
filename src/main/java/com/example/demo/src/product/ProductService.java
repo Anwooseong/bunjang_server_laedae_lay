@@ -2,12 +2,15 @@ package com.example.demo.src.product;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.product.model.PatchProductReq;
 import com.example.demo.src.product.model.PostProductDetailRes;
 import com.example.demo.src.product.model.PostProductReq;
 import com.example.demo.src.product.model.PostProductRes;
 import com.example.demo.src.s3.S3Uploader;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +25,7 @@ import static com.example.demo.config.BaseResponseStatus.MODIFY_PRODUCT_STATUS_F
 @Transactional
 @RequiredArgsConstructor
 public class ProductService {
-
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final JwtService jwtService;
     private final ProductDao productDao;
     private final ProductProvider productProvider;
@@ -103,6 +106,57 @@ public class ProductService {
                 productDao.createProductTag(lastInsertId, tagId);
             }
             return new PostProductDetailRes(lastInsertId);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+
+    public String updateProduct(int productId, PatchProductReq patchProductReq, List<MultipartFile> images) throws BaseException {
+        try {
+            // 상품 정보 Update
+            int updateProductResult = productDao.updateProduct(productId, patchProductReq);
+            logger.info("imgall + "+String.valueOf(updateProductResult));
+            if(updateProductResult == 0) {
+                throw new BaseException(BaseResponseStatus.PATCH_USER_PRODUCT_UPDATE_FAIL);
+            }
+
+            // productId에 해당하는 모든 이미지 삭제 및 새로운 이미지 업로드
+            List<String> imageUrl = s3Uploader.uploadFile(images, "items/" + productId, productId);
+            List<String> resultUrl = new ArrayList<>();
+
+            logger.info("imgUrl"+imageUrl.toString());
+
+            // productId를 가진 이미지 URL 저장 레코드 모두 삭제
+            int deleteProductImgAllResult = productDao.deleteProductImgAll(productId);
+            logger.info("imgall + "+String.valueOf(deleteProductImgAllResult));
+            if(deleteProductImgAllResult == 0) {
+                throw new BaseException(BaseResponseStatus.PATCH_PRODUCT_IMG_DELETE_ALL_FAIL);
+            }
+
+            // 반환받은 S3 이미지 URL 리스트를 하나씩 새로 Insert
+            for (String image : imageUrl) {
+                if (image == null)
+                    break;
+                resultUrl.add(image);
+
+                int updateProductImgResult = productDao.createProductImage(productId, image);
+                if (updateProductImgResult == 0){
+                    throw new BaseException(BaseResponseStatus.PATCH_USER_PRODUCT_IMG_CREATE_FAIL);
+                }
+            }
+
+            // productId에 해당하는 모든 태그 삭제
+            int deleteProductTagAllResult = productDao.deleteProductTagAll(productId);
+            if(deleteProductTagAllResult == 0) {
+                throw new BaseException(BaseResponseStatus.PATCH_USER_PRODUCT_TAG_DELETE_ALL_FAIL);
+            }
+
+            // 태그 리스트 하나씩 새로 Insert
+            for (Integer tagId : patchProductReq.getTagIds()) {
+                productDao.createProductTag(productId, tagId);
+            }
+            return "내 상품 수정에 성공하였습니다.";
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }

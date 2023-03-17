@@ -185,4 +185,76 @@ public class ProductController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
+
+    /**
+     *  내 상품 정보 수정  API
+     * [PATCH] /app/products/:productId
+     * @return BaseResponse<String>
+     */
+    @PatchMapping(value="/{productId}", consumes = {"multipart/form-data"})
+    public BaseResponse<String> updateProduct(@PathVariable int productId,
+                                                      @RequestPart(value = "file") List<MultipartFile> images,
+                                              @RequestPart(value = "patchProductReq") PatchProductReq patchProductReq) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, patchProductReq.getUserId());
+
+            String postProductRes = productService.updateProduct(productId, patchProductReq, images);
+            return new BaseResponse<>(postProductRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 대분류 카테고리에 속하는 상품 전체 조회  API
+     * [GET] /app/products/major/:categoryId?order=
+     *
+     * @return BaseResponse<List <GetProductInMajorRes>>
+     */
+    @GetMapping("/major/{categoryId}")
+    public BaseResponse<List<GetProductInMajorRes>> getProductsInMajor(@PathVariable int categoryId,
+                                                                      @RequestParam(value = "order", required = false, defaultValue = "recent") String order) {
+        ArrayList<String> orderValues = new ArrayList<>(Arrays.asList("recent", "popular", "low", "high"));
+
+        try {
+            if(!orderValues.contains(order)) {
+                throw new BaseException(GET_PRODUCT_INVALID_QUERY_STRING_ORDER);
+            }
+
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateTokenExpired();
+            List<GetProductInMajorRes> getProductsInMajorRes = productProvider.getProductsInMajor(userIdByJwt, categoryId, order);
+            return new BaseResponse<>(getProductsInMajorRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 대분류 카테고리에 속하는 상품 전체 조회  API
+     * [GET] /app/products/major/:categoryId?order=
+     *
+     * @return BaseResponse<List <GetProductInMajorRes>>
+     */
+    @GetMapping("/middle/{categoryId}")
+    public BaseResponse<List<GetProductInMiddleRes>> getProductsInMiddle(@PathVariable int categoryId,
+                                                                       @RequestParam(value = "order", required = false, defaultValue = "recent") String order) {
+        ArrayList<String> orderValues = new ArrayList<>(Arrays.asList("recent", "popular", "low", "high"));
+
+        try {
+            if(!orderValues.contains(order)) {
+                throw new BaseException(GET_PRODUCT_INVALID_QUERY_STRING_ORDER);
+            }
+
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateTokenExpired();
+            List<GetProductInMiddleRes> getProductsInMiddleRes = productProvider.getProductsInMiddle(userIdByJwt, categoryId, order);
+            return new BaseResponse<>(getProductsInMiddleRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
 }

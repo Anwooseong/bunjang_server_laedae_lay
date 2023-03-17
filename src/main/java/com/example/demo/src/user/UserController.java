@@ -99,7 +99,7 @@ public class UserController {
      * @return BaseResponse<String>
      */
     @ResponseBody
-    @PatchMapping("/{userId}/delete")
+    @PatchMapping("/{userId}/status")
     public BaseResponse<String> withDrawUser(@PathVariable("userId") int userId) {
         try {
             int userIdByJwt = jwtService.getUserId();  // 토큰에서 userId 추출 / 토큰 만료, 빈 토큰, 부적합 토큰 체크
