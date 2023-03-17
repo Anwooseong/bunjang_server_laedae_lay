@@ -111,12 +111,12 @@ public class ProductService {
         }
     }
 
-
+    @Transactional(rollbackOn = BaseException.class)
     public String updateProduct(int productId, PatchProductReq patchProductReq, List<MultipartFile> images) throws BaseException {
         try {
             // 상품 정보 Update
             int updateProductResult = productDao.updateProduct(productId, patchProductReq);
-            logger.info("imgall + "+String.valueOf(updateProductResult));
+
             if(updateProductResult == 0) {
                 throw new BaseException(BaseResponseStatus.PATCH_USER_PRODUCT_UPDATE_FAIL);
             }
@@ -125,11 +125,10 @@ public class ProductService {
             List<String> imageUrl = s3Uploader.uploadFile(images, "items/" + productId, productId);
             List<String> resultUrl = new ArrayList<>();
 
-            logger.info("imgUrl"+imageUrl.toString());
 
             // productId를 가진 이미지 URL 저장 레코드 모두 삭제
             int deleteProductImgAllResult = productDao.deleteProductImgAll(productId);
-            logger.info("imgall + "+String.valueOf(deleteProductImgAllResult));
+
             if(deleteProductImgAllResult == 0) {
                 throw new BaseException(BaseResponseStatus.PATCH_PRODUCT_IMG_DELETE_ALL_FAIL);
             }

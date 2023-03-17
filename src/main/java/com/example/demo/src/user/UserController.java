@@ -385,6 +385,24 @@ public class UserController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
+    /**
+     * 찜목록 조회 API
+     * [GET] /app/users/{userId}/likes
+     * @return BaseResponse<GetMyProductAllRes>
+     */
+    @GetMapping("/{userId}/likes")
+    public BaseResponse<GetMyProductAllRes> getMyProducts(@PathVariable int userId) {
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateUserByJwt(userIdByJwt, userId);
+
+            GetMyProductAllRes getMyProductsRes = userProvider.getMyProducts(userId);
+            return new BaseResponse<>(getMyProductsRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
 }
 
 

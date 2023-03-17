@@ -1,6 +1,8 @@
 package com.example.demo.src.user;
 
 
+import com.example.demo.src.user.dto.Collection;
+import com.example.demo.src.user.dto.MyProduct;
 import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -794,5 +796,50 @@ public class UserDao {
         int deleteUserAddressesParams = addressId;
 
         return this.jdbcTemplate.update(deleteUserAddressesQuery, deleteUserAddressesParams);
+    }
+
+    public List<Collection> getCollections(int userId) {
+        String getCollectionsQuery = "select collection_id as id, MyProduct.product_id,C.name, count(*) as count, PI.url " +
+                "from MyProduct " +
+                "join Collection C on MyProduct.collection_id = C.id " +
+                "left join ProductImg PI on MyProduct.product_id = PI.product_id " +
+                "where MyProduct.user_id = ? and collection_id is not null and MyProduct.id IN ( " +
+                "    select max(id) from MyProduct group by collection_id " +
+                "    ) " +
+                "group by collection_id, product_id";
+
+        return this.jdbcTemplate.query(getCollectionsQuery,
+                (rs,rowNum)->new Collection(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("count"),
+                        rs.getString("url")
+                )
+                ,userId);
+    }
+
+    public List<MyProduct> getMyProducts(int userId) {
+        String getMyProductsQuery = "select P.id as product_id, url, seller_id, is_safe_pay, P.title, price, profile_url, name, P.created_at " +
+                "from MyProduct " +
+                "join Product P on MyProduct.product_id = P.id " +
+                "left join ProductImg PI on P.id = PI.product_id " +
+                "join User U on P.seller_id = U.id " +
+                "where user_id = ? and collection_id is null and PI.id in ( " +
+                "select max(id) from ProductImg group by ProductImg.product_id " +
+                ")";
+
+        return this.jdbcTemplate.query(getMyProductsQuery,
+                (rs,rowNum) -> new MyProduct(
+                        rs.getInt("product_id"),
+                        rs.getString("url"),
+                        rs.getInt("seller_id"),
+                        rs.getString("is_safe_pay"),
+                        rs.getString("title"),
+                        rs.getInt("price"),
+                        rs.getString("profile_url"),
+                        rs.getString("name"),
+                        rs.getString("created_at")
+                )
+                ,userId);
     }
 }

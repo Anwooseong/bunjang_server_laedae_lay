@@ -1,6 +1,8 @@
 package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.user.dto.Collection;
+import com.example.demo.src.user.dto.MyProduct;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
@@ -236,6 +238,19 @@ public class UserProvider {
         try {
             List<GetUserAddressRes> getUserAddressesRes = userDao.getUserAddresses(userId);
             return getUserAddressesRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetMyProductAllRes getMyProducts(int userId) throws BaseException {
+        try {
+            System.out.println("service");
+            List<Collection> collections = userDao.getCollections(userId);
+            System.out.println(collections.toString());
+            List<MyProduct> myProducts = userDao.getMyProducts(userId);
+            System.out.println(myProducts.toString());
+            return new GetMyProductAllRes(collections, myProducts);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
