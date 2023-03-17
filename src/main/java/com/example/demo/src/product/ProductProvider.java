@@ -192,6 +192,14 @@ public class ProductProvider {
         }
     }
 
-
+    public List<GetProductInSubRes> getProductsInSub(int userId, int categoryId, String order) throws BaseException {
+        try {
+            List<GetProductInSubRes> getProductsInSubRes = productDao.getProductsInSub(userId, categoryId, order);
+            return getProductsInSubRes;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 
 }

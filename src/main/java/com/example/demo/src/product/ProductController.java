@@ -233,10 +233,10 @@ public class ProductController {
     }
 
     /**
-     * 대분류 카테고리에 속하는 상품 전체 조회  API
-     * [GET] /app/products/major/:categoryId?order=
+     * 중분류 카테고리에 속하는 상품 전체 조회  API
+     * [GET] /app/products/middle/:categoryId?order=
      *
-     * @return BaseResponse<List <GetProductInMajorRes>>
+     * @return BaseResponse<List <GetProductInMiddleRes>>
      */
     @GetMapping("/middle/{categoryId}")
     public BaseResponse<List<GetProductInMiddleRes>> getProductsInMiddle(@PathVariable int categoryId,
@@ -252,6 +252,31 @@ public class ProductController {
             jwtService.validateTokenExpired();
             List<GetProductInMiddleRes> getProductsInMiddleRes = productProvider.getProductsInMiddle(userIdByJwt, categoryId, order);
             return new BaseResponse<>(getProductsInMiddleRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
+    /**
+     * 소분류 카테고리에 속하는 상품 전체 조회  API
+     * [GET] /app/products/sub/:categoryId?order=
+     *
+     * @return BaseResponse<List <GetProductInSubRes>>
+     */
+    @GetMapping("/sub/{categoryId}")
+    public BaseResponse<List<GetProductInSubRes>> getProductsInSub(@PathVariable int categoryId,
+                                                                         @RequestParam(value = "order", required = false, defaultValue = "recent") String order) {
+        ArrayList<String> orderValues = new ArrayList<>(Arrays.asList("recent", "popular", "low", "high"));
+
+        try {
+            if(!orderValues.contains(order)) {
+                throw new BaseException(GET_PRODUCT_INVALID_QUERY_STRING_ORDER);
+            }
+
+            int userIdByJwt = jwtService.getUserId();
+            jwtService.validateTokenExpired();
+            List<GetProductInSubRes> getProductsInSubRes = productProvider.getProductsInSub(userIdByJwt, categoryId, order);
+            return new BaseResponse<>(getProductsInSubRes);
         } catch (BaseException e) {
             return new BaseResponse<>((e.getStatus()));
         }
