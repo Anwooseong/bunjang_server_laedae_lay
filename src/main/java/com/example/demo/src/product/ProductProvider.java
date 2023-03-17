@@ -172,4 +172,14 @@ public class ProductProvider {
         }
     }
 
+    public List<GetProductInMajorRes> getProductsInMajor(int userId, int categoryId, String order) throws BaseException {
+        try {
+            List<GetProductInMajorRes> getProductsInMajorRes = productDao.getProductsInMajor(userId, categoryId, order);
+            return getProductsInMajorRes;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
 }
